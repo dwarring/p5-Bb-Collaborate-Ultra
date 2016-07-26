@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 12;
+use Test::More tests => 11;
 use Test::Fatal;
 use version;
 
@@ -11,7 +11,7 @@ use Bb::Ultra::Connection;
  SKIP: {
      my %t = t::Ultra->test_connection;
      my $connection = $t{connection};
-     skip $t{skip} || 'skipping live tests', 10
+     skip $t{skip} || 'skipping live tests', 11
 	 unless $connection;
 
      ok $connection->issuer, 'issuer';
@@ -43,8 +43,7 @@ use Bb::Ultra::Connection;
 	 startTime => "2016-12-01T21:32:00.937Z",
 	 endTime   => "2016-12-01T22:32:00.937Z",
      });
-     my %data  = map { $_ => $session->$_ } (qw<name startTime endTime>);
-     my $json = to_json(\%data);
+     my $json = $session->freeze;
      $connection->client->POST('sessions',
 		   $json,
 		   {
@@ -52,11 +51,10 @@ use Bb::Ultra::Connection;
 		       'Authorization' => 'Bearer ' . $connection->auth->access_token,	
 		   },
 	 );
-     my $result = $connection->response_data;
-     is ref $result, 'HASH', 'response data';
-     $session = Bb::Ultra::Session->new($result);
-
+     my $msg = $connection->response;
+     $session = Bb::Ultra::Session->construct($msg);
      ok $session->created, "session creation";
+
 }
 
 done_testing;

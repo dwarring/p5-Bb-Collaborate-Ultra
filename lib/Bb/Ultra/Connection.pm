@@ -1,20 +1,20 @@
 package Bb::Ultra::Connection {
     use warnings; use strict;
+    use Bb::Ultra;
     use Crypt::JWT qw(encode_jwt decode_jwt);
     use JSON;
-    use Moo;
+    use Mouse;
     use REST::Client;
     use Bb::Ultra::Connection::Auth;
-    use Bb::Ultra::Types;
 
-    has 'issuer' => (is => 'rw', isa => Str, required => 1);
-    has 'secret' => (is => 'rw', isa => Str, required => 1);
-    has 'host'   => (is => 'rw', isa => Str, required => 1);
+    has 'issuer' => (is => 'rw', isa => 'Str', required => 1);
+    has 'secret' => (is => 'rw', isa => 'Str', required => 1);
+    has 'host'   => (is => 'rw', isa => 'Str', required => 1);
 
-    has 'client' => (is => 'rw',  isa => class('REST::Client') );
-    has 'auth'  =>  (is => 'rw', isa => class('Bb::Ultra::Connection::Auth') ); 
-    has 'auth_start'  =>  (is => 'rw', isa => Int );
-    has 'debug'  =>  (is => 'rw', isa => Int );
+    has 'client' => (is => 'rw',  isa => 'REST::Client' );
+    has 'auth'  =>  (is => 'rw', isa => 'Bb::Ultra::Connection::Auth' ); 
+    has 'auth_start'  =>  (is => 'rw', isa => 'Int' );
+    has 'debug'  =>  (is => 'rw', isa => 'Int' );
 
     sub auth_end {
 	my $self = shift;
@@ -24,16 +24,13 @@ package Bb::Ultra::Connection {
 	$self->auth_start + $auth->expires_in;
     }
 
-    sub response_data {
+    sub response {
 	my $self = shift;
 	my $client = shift || $self->client;
 	my $response_code = $client->responseCode;
 	die "bad HTTP response code: $response_code"
 	    unless $response_code == 200;
-	my $json = $client->responseContent;
-	warn "json:$json"
-	    if $self->debug;
-	from_json($json);
+	$client->responseContent;
     }
 
     sub connect {
@@ -63,8 +60,8 @@ package Bb::Ultra::Connection {
 
 	$self->auth_start( time() );
 	$client->POST(JWT_TOKEN_ENDPOINT . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
-	my $auth_ref = $self->response_data($client);
-	$self->auth(  Bb::Ultra::Connection::Auth->new($auth_ref) );
+	my $auth_msg = $self->response($client);
+	$self->auth(  Bb::Ultra::Connection::Auth->construct($auth_msg) );
     }
 }
 
