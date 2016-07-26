@@ -11,7 +11,7 @@ package Bb::Ultra::Types {
     BEGIN {
 	require Exporter;
 	@ISA = qw(Exporter);
-	@EXPORT = qw<Int Str class>;
+	@EXPORT = qw<Int Str Bool class>;
 	%EXPORT_TAGS = (all => \@EXPORT);
     }
 }

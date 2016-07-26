@@ -4,7 +4,7 @@ package Bb::Ultra::Connection {
     use JSON;
     use Moo;
     use REST::Client;
-    use Bb::Ultra::Connection::Token;
+    use Bb::Ultra::Connection::Auth;
     use Bb::Ultra::Types;
 
     has 'issuer' => (is => 'rw', isa => Str, required => 1);
@@ -12,11 +12,19 @@ package Bb::Ultra::Connection {
     has 'host'   => (is => 'rw', isa => Str, required => 1);
 
     has 'client' => (is => 'rw',  isa => class('REST::Client') );
-    has 'token'  =>  (is => 'rw', isa => class('Bb::Ultra::Connection::Token') ); 
-    has 'token_start'  =>  (is => 'rw', isa => Int );
+    has 'auth'  =>  (is => 'rw', isa => class('Bb::Ultra::Connection::Auth') ); 
+    has 'auth_start'  =>  (is => 'rw', isa => Int );
     has 'debug'  =>  (is => 'rw', isa => Int );
 
-    sub thaw {
+    sub auth_end {
+	my $self = shift;
+	my $auth = $self->auth
+	    or return;
+
+	$self->auth_start + $auth->expires_in;
+    }
+
+    sub response_data {
 	my $self = shift;
 	my $client = shift || $self->client;
 	my $response_code = $client->responseCode;
@@ -53,10 +61,10 @@ package Bb::Ultra::Connection {
 	    assertion => $jwt,
 	});
 
-	$self->token_start( time() );
+	$self->auth_start( time() );
 	$client->POST(JWT_TOKEN_ENDPOINT . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
-	my $token_ref = $self->thaw($client);
-	$self->token(  Bb::Ultra::Connection::Token->new($token_ref) );
+	my $auth_ref = $self->response_data($client);
+	$self->auth(  Bb::Ultra::Connection::Auth->new($auth_ref) );
     }
 }
 
