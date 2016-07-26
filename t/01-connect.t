@@ -1,17 +1,19 @@
 use warnings; use strict;
-use Test::More tests => 11;
+use Test::More tests => 12;
 use Test::Fatal;
 use version;
 
 use lib '.';
 use t::Ultra;
+use Date::Parse;
+use Scalar::Util qw<looks_like_number>;
 
 use Bb::Ultra::Connection;
 
  SKIP: {
      my %t = t::Ultra->test_connection;
      my $connection = $t{connection};
-     skip $t{skip} || 'skipping live tests', 11
+     skip $t{skip} || 'skipping live tests', 12
 	 unless $connection;
 
      ok $connection->issuer, 'issuer';
@@ -40,10 +42,11 @@ use Bb::Ultra::Connection;
      use JSON;
      my $session =  Bb::Ultra::Session->new( {
 	 name => 'Test Session',
-	 startTime => "2016-12-01T21:32:00.937Z",
-	 endTime   => "2016-12-01T22:32:00.937Z",
+	 startTime => str2time "2016-12-01T21:32:00.937Z",
+	 endTime   => str2time "2016-12-01T22:32:00.937Z",
      });
      my $json = $session->freeze;
+     warn "json: $json";
      $connection->client->POST('sessions',
 		   $json,
 		   {
@@ -54,6 +57,8 @@ use Bb::Ultra::Connection;
      my $msg = $connection->response;
      $session = Bb::Ultra::Session->construct($msg);
      ok $session->created, "session creation";
+     ok looks_like_number $session->created, "created data-type"
+	 or diag "created: " .  $session->created;
 
 }
 

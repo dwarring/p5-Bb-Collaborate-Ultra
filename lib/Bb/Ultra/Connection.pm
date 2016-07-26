@@ -11,7 +11,7 @@ package Bb::Ultra::Connection {
     has 'secret' => (is => 'rw', isa => 'Str', required => 1);
     has 'host'   => (is => 'rw', isa => 'Str', required => 1);
 
-    has 'client' => (is => 'rw',  isa => 'REST::Client' );
+    has 'client' => (is => 'rw', isa => 'REST::Client' );
     has 'auth'  =>  (is => 'rw', isa => 'Bb::Ultra::Connection::Auth' ); 
     has 'auth_start'  =>  (is => 'rw', isa => 'Int' );
     has 'debug'  =>  (is => 'rw', isa => 'Int' );
@@ -27,6 +27,8 @@ package Bb::Ultra::Connection {
     sub response {
 	my $self = shift;
 	my $client = shift || $self->client;
+	warn "response: ". $client->responseContent
+	    if $self->debug;
 	my $response_code = $client->responseCode;
 	die "bad HTTP response code: $response_code"
 	    unless $response_code == 200;

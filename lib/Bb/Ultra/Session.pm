@@ -4,8 +4,8 @@ package Bb::Ultra::Session {
     extends 'Bb::Ultra';
     has 'id' => (is => 'rw', isa => 'Str');
     has 'name' => (is => 'rw', isa => 'Str');
-    has 'startTime' => (is => 'rw', isa => 'Str');
-    has 'endTime' => (is => 'rw', isa => 'Str');
+    has 'startTime' => (is => 'rw', isa => 'Date');
+    has 'endTime' => (is => 'rw', isa => 'Date');
     has 'boundaryTime' => (is => 'rw', isa => 'Int');
     has 'guestUrl' => (is => 'rw', isa => 'Str');
     has 'allowGuest' => (is => 'rw', isa => 'Bool');
@@ -21,7 +21,7 @@ package Bb::Ultra::Session {
     has 'raiseHandOnEnter' => (is => 'rw', isa => 'Bool');
     has 'allowInSessionInvitees' => (is => 'rw', isa => 'Bool');
     has 'canDownloadRecording' => (is => 'rw', isa => 'Bool');
-    has 'created' => (is => 'rw', isa => 'Str');
-    has 'updated' => (is => 'rw', isa => 'Str');
+    has 'created' => (is => 'rw', isa => 'Date');
+    has 'updated' => (is => 'rw', isa => 'Date');
 }
 1;
