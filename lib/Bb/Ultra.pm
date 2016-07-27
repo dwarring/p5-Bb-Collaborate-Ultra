@@ -35,15 +35,25 @@ Return a hashref of attribute data types.
 
     sub freeze {
 	my $self = shift;
+	my $types = $self->_property_types;
+	my $data = shift // { {
+	    map { $_ => $self->$_ }
+	    grep { defined $self->$_ }
+	    (keys %{$types})
+	    } };
 
 	my %frozen;
-	my $types = $self->_property_types;
 
-	for my $att (sort keys %$types) {
-	    my $val = $self->$att;
-	    $frozen{$att} = Bb::Ultra::Util::freeze($val, $types->{$att})
-		if defined $val;
+	for my $fld (keys %$data) {
+	    if (exists $types->{$fld}) {
+		my $val = $data->{$fld};
+		$frozen{$fld} = Bb::Ultra::Util::freeze($val, $types->{$fld});
+	    }
+	    else {
+		warn "ignoring field: $fld";
+	    }
 	}
+
 	my $payload = to_json \%frozen;
 	$payload;
     }
@@ -74,6 +84,34 @@ Return a hashref of attribute data types.
 	$class->new($data);
     }
 
+    sub load_schema {
+	my $class = shift;
+	my $data = join("", @_);
+        my $schema = from_json($data);
+	my $properties = $schema->{properties}
+	    or die 'schema has no properties';
+	foreach my $prop (sort keys %$properties) {
+	    my $type = $properties->{$prop}{type}
+	        or die "property has no type: $prop";
+            my $isa = {string => 'Str',
+		       boolean => 'Bool',
+		       array  => 'Array',
+		       object => 'Object',
+	    }->{$type}
+	        or die "unknown type: $type";
+	    if ($type eq 'Array' || $type eq 'Object') {
+		warn "ignoring $prop array/object";
+		next;
+	    }
+	    my $format = $properties->{$prop}{format};
+	    $isa = 'Date' if $format && $format eq 'DATE_TIME';
+	    my $required = $properties->{$prop}{required} ? 1 : 0;
+
+	    $class->meta->add_attribute(
+		$prop => (isa => $isa, is => 'rw', required => $required)
+		);
+	}
+    }
 
     #
     # Shared subtypes

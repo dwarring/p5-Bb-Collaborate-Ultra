@@ -41,12 +41,12 @@ use Bb::Ultra::Connection;
 
      use Bb::Ultra::Session;
      use JSON;
-     my $session =  Bb::Ultra::Session->new( {
-	 name => 'Test Session',
-	 startTime => str2time "2016-12-01T21:32:00.937Z",
-	 endTime   => str2time "2016-12-01T22:32:00.937Z",
-     });
-     $session = $connection->post($session);
+     my $session =  $connection->post(
+	 'Bb::Ultra::Session' => {
+	     name => 'Test Session',
+	     startTime => str2time "2016-12-01T21:32:00.937Z",
+	     endTime   => str2time "2016-12-01T22:32:00.937Z",
+	 });
      ok $session->created, "session creation";
      ok looks_like_number $session->created, "created data-type"
 	 or diag "created: " .  $session->created;

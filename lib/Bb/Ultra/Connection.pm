@@ -68,11 +68,11 @@ package Bb::Ultra::Connection {
 
     sub post {
 	my $self = shift;
-	my $obj = shift;
+	my $class = shift;
+	my $data = shift;
 
-	my $json = $obj->freeze;
-	warn "json: $json";
-	my $resource = $obj->resource;
+	my $resource = $class->resource;
+	my $json = $class->freeze($data);
 	$self->client->POST($resource,
 			    $json,
 			    {
@@ -81,7 +81,7 @@ package Bb::Ultra::Connection {
 			    },
 	    );
 	my $msg = $self->response;
-	$obj->construct($msg);
+	$class->construct($msg);
     }
 }
 
