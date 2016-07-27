@@ -65,6 +65,24 @@ package Bb::Ultra::Connection {
 	my $auth_msg = $self->response($client);
 	$self->auth(  Bb::Ultra::Connection::Auth->construct($auth_msg) );
     }
+
+    sub post {
+	my $self = shift;
+	my $obj = shift;
+
+	my $json = $obj->freeze;
+	warn "json: $json";
+	my $resource = $obj->resource;
+	$self->client->POST($resource,
+			    $json,
+			    {
+				'Content-Type' => 'application/json',
+				'Authorization' => 'Bearer ' . $self->auth->access_token,
+			    },
+	    );
+	my $msg = $self->response;
+	$obj->construct($msg);
+    }
 }
 
 1;

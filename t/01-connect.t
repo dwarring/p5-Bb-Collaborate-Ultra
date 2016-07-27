@@ -20,7 +20,8 @@ use Bb::Ultra::Connection;
      ok $connection->secret, 'secret';
      ok $connection->host, 'host';
 
-     is exception { $connection->connect }, undef, "connection lives";
+     use Carp; $SIG{__DIE__} = \&Carp::confess;
+     is exception { $connection->connect; }, undef, "connection lives";
 
      my $auth_start = $connection->auth_start;
      ok $auth_start, 'auth_start';
@@ -45,17 +46,7 @@ use Bb::Ultra::Connection;
 	 startTime => str2time "2016-12-01T21:32:00.937Z",
 	 endTime   => str2time "2016-12-01T22:32:00.937Z",
      });
-     my $json = $session->freeze;
-     warn "json: $json";
-     $connection->client->POST('sessions',
-		   $json,
-		   {
-		       'Content-Type' => 'application/json',
-		       'Authorization' => 'Bearer ' . $connection->auth->access_token,	
-		   },
-	 );
-     my $msg = $connection->response;
-     $session = Bb::Ultra::Session->construct($msg);
+     $session = $connection->post($session);
      ok $session->created, "session creation";
      ok looks_like_number $session->created, "created data-type"
 	 or diag "created: " .  $session->created;

@@ -1,8 +1,13 @@
-package Bb::Ultra {
+use Class::Data::Inheritable;
+package Bb::Ultra; BEGIN {
     use warnings; use strict;
     use Mouse;
+    use parent qw{Class::Data::Inheritable};
     use JSON;
     use Bb::Ultra::Util;
+
+    __PACKAGE__->mk_classdata('_types');
+    __PACKAGE__->mk_classdata('resource');
 
 =head2 property_types
 
@@ -15,12 +20,17 @@ Return a hashref of attribute data types.
 
     sub _property_types {
 	my $class = shift;
-	my $meta = $class->meta;
-	my @atts = $meta->get_attribute_list;
+	my $types = $class->_types;
+	unless ($types) {
+	    my $meta = $class->meta;
+	    my @atts = $meta->get_attribute_list;
 
-	return {
-	    map {$_ => $meta->get_attribute($_)->{type_constraint}} @atts
-	};
+	    $types = {
+		map {$_ => $meta->get_attribute($_)->{type_constraint}} @atts
+	    };
+	    $class->_types($types);
+	}
+	$types;
     }
 
     sub freeze {

@@ -2,6 +2,7 @@ package Bb::Ultra::Session {
     use warnings; use strict;
     use Mouse;
     extends 'Bb::Ultra';
+    __PACKAGE__->resource('sessions');
     has 'id' => (is => 'rw', isa => 'Str');
     has 'name' => (is => 'rw', isa => 'Str');
     has 'startTime' => (is => 'rw', isa => 'Date');
