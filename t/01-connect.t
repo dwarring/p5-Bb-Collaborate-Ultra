@@ -41,7 +41,7 @@ use Bb::Ultra::Connection;
 
      use Bb::Ultra::Session;
      use JSON;
-     my $session =  $connection->post(
+     my $session =  $connection->create(
 	 'Bb::Ultra::Session' => {
 	     name => 'Test Session',
 	     startTime => str2time "2016-12-01T21:32:00.937Z",
