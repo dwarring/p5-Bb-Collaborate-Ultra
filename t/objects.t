@@ -1,9 +1,16 @@
 use warnings; use strict;
-use Test::More tests => 14;
+use Test::More tests => 16;
 use Test::Fatal;
 
 # ----------------------------------------------------------------
 use Bb::Ultra::Session;
+
+ok(Bb::Ultra::Session->can('startTime'), "accessor introspection");
+
+my $types = Bb::Ultra::Session->_property_types;
+
+ok exists $types->{startTime}, "property_types introspection"
+    or diag explain {'session.types' => $types};
 
 my $now = time;
 my %session_data = (
@@ -63,4 +70,3 @@ is $user->userName, 'Bob', 'launch_context->user->userName';
 
 # ----------------------------------------------------------------
 done_testing;
-

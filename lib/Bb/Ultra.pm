@@ -92,9 +92,9 @@ Return a hashref of attribute data types.
         my $schema = from_json($data);
 	my $properties = $schema->{properties}
 	    or die 'schema has no properties';
-	my $predeclared = $class->_property_types;
+
 	foreach my $prop (sort keys %$properties) {
-	    next if exists $predeclared->{$prop};
+	    next if $class->meta->get_attribute($prop);
 	    my $type = $properties->{$prop}{type}
 	        or die "property has no type: $prop";
             my $isa = {string => 'Str',
@@ -110,7 +110,6 @@ Return a hashref of attribute data types.
 	    my $format = $properties->{$prop}{format};
 	    $isa = 'Date' if $format && $format eq 'DATE_TIME';
 	    my $required = $properties->{$prop}{required} ? 1 : 0;
-
 	    $class->meta->add_attribute(
 		$prop => (isa => $isa, is => 'rw', required => $required)
 		);
