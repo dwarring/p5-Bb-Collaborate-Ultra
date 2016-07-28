@@ -1,9 +1,9 @@
 package Bb::Ultra::Session;
-    use warnings; use strict;
-    use Mouse;
-    extends 'Bb::Ultra';
-    __PACKAGE__->resource('sessions');
-    __PACKAGE__->load_schema(<DATA>);
+use warnings; use strict;
+use Mouse;
+extends 'Bb::Ultra';
+__PACKAGE__->resource('sessions');
+__PACKAGE__->load_schema(<DATA>);
 1;
 # downloaded from https://xx-csa.bbcollab.com/documentation
 __DATA__

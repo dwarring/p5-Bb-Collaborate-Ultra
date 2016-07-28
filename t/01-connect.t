@@ -65,7 +65,7 @@ use Bb::Ultra::Connection;
      is exception {
 	 $connection->del('Bb::Ultra::Session' => {
 	     id => $session->id,
-			  });
+	 });
      }, undef, "session deletion lives";
 }
 

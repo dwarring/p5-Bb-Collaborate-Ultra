@@ -92,7 +92,9 @@ Return a hashref of attribute data types.
         my $schema = from_json($data);
 	my $properties = $schema->{properties}
 	    or die 'schema has no properties';
+	my $predeclared = $class->_property_types;
 	foreach my $prop (sort keys %$properties) {
+	    next if exists $predeclared->{$prop};
 	    my $type = $properties->{$prop}{type}
 	        or die "property has no type: $prop";
             my $isa = {string => 'Str',
