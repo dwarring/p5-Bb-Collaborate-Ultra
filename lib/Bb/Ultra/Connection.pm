@@ -66,7 +66,7 @@ package Bb::Ultra::Connection {
 	$self->auth(  Bb::Ultra::Connection::Auth->construct($auth_msg) );
     }
 
-    sub create {
+    sub put {
 	my $self = shift;
 	my $class = shift;
 	my $data = shift;
@@ -80,6 +80,44 @@ package Bb::Ultra::Connection {
 	my $msg = $self->response;
 	$class->construct($msg);
     }
+
+    sub get {
+	my $self = shift;
+	my $class = shift;
+	my $data = shift || {};
+
+	my $path = $class->resource;
+	$path .= '/' . $data->{id}
+	    if $data->{id};
+	
+	$self->client->GET($path, {
+	    'Content-Type' => 'application/json',
+	    'Authorization' => 'Bearer ' . $self->auth->access_token,
+        },);
+	my $msg = from_json $self->response;
+	$msg->{results}
+	    ? map { $class->construct($_) } @{ $msg->{results} }
+	    : $class->construct($msg);
+    }
+
+    sub del {
+	my $self = shift;
+	my $class = shift;
+	my $data = shift || {};
+
+	my $path = $class->resource;
+	die "path required for `deletion"
+	    unless $data->{id};
+	$path .= '/' . $data->{id};
+	
+	$self->client->DELETE($path, {
+	    'Content-Type' => 'application/json',
+	    'Authorization' => 'Bearer ' . $self->auth->access_token,
+        },);
+	my $msg = $self->response;
+
+    }
+
 }
 
 1;

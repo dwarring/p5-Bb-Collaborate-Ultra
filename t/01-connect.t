@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 12;
+use Test::More tests => 15;
 use Test::Fatal;
 use version;
 
@@ -13,14 +13,13 @@ use Bb::Ultra::Connection;
  SKIP: {
      my %t = t::Ultra->test_connection;
      my $connection = $t{connection};
-     skip $t{skip} || 'skipping live tests', 12
+     skip $t{skip} || 'skipping live tests', 15
 	 unless $connection;
 
      ok $connection->issuer, 'issuer';
      ok $connection->secret, 'secret';
      ok $connection->host, 'host';
 
-     use Carp; $SIG{__DIE__} = \&Carp::confess;
      is exception { $connection->connect; }, undef, "connection lives";
 
      my $auth_start = $connection->auth_start;
@@ -41,7 +40,7 @@ use Bb::Ultra::Connection;
 
      use Bb::Ultra::Session;
      use JSON;
-     my $session =  $connection->create(
+     my $session =  $connection->put(
 	 'Bb::Ultra::Session' => {
 	     name => 'Test Session',
 	     startTime => str2time "2016-12-01T21:32:00.937Z",
@@ -51,6 +50,23 @@ use Bb::Ultra::Connection;
      ok looks_like_number $session->created, "created data-type"
 	 or diag "created: " .  $session->created;
 
+     my $session_id = $session->id;
+     $session = undef;
+
+     $session = $connection->get('Bb::Ultra::Session' => {
+	     id => $session_id,
+      });
+
+     ok $session->created, "session creation";
+     ok looks_like_number $session->created, "created data-type"
+	 or diag "created: " .  $session->created;
+
+     
+     is exception {
+	 $connection->del('Bb::Ultra::Session' => {
+	     id => $session->id,
+			  });
+     }, undef, "session deletion lives";
 }
 
 done_testing;

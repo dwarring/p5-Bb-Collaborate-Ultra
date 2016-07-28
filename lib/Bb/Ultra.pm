@@ -61,7 +61,9 @@ Return a hashref of attribute data types.
     sub thaw {
 	my $self = shift;
 	my $payload = shift;
-	my $data = from_json($payload);
+	my $data = ref $payload
+	    ? $payload
+            : from_json($payload);
 	my $types = $self->_property_types;
 	my %thawed;
 
