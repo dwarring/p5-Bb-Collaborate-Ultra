@@ -70,10 +70,11 @@ package Bb::Ultra::Connection {
 	my $self = shift;
 	my $class = shift;
 	my $data = shift;
+	my %opt = @_;
 
-	my $resource = $class->resource;
+	my $path = $opt{path} // $class->resource;
 	my $json = $class->freeze($data);
-	$self->client->POST($resource, $json, {
+	$self->client->POST($path, $json, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
         },);

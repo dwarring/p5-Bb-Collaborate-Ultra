@@ -39,7 +39,7 @@ use Bb::Ultra::Connection;
 	 or diag "expires: $expires";
 
      use Bb::Ultra::Session;
-     use JSON;
+
      my $session =  $connection->put(
 	 'Bb::Ultra::Session' => {
 	     name => 'Test Session',
@@ -61,7 +61,23 @@ use Bb::Ultra::Connection;
      ok looks_like_number $session->created, "created data-type"
 	 or diag "created: " .  $session->created;
 
-     
+     use Bb::Ultra::User;
+     use Bb::Ultra::LaunchContext;
+
+     my $user = Bb::Ultra::User->new({
+	 email => 'arnold.gerard@blackboard.com',
+	 firstName => 'Arnold',
+	 lastName => 'Gerard',
+     });
+
+     $connection->put( 'Bb::Ultra::LaunchContext' => {
+	 launchingRole => 'moderator',
+	 editingPermission => 'reader',
+	 user => $user
+      },
+      path => sprintf('sessions/%s/url', $session->id), # interim option
+	 );
+	     
      is exception {
 	 $connection->del('Bb::Ultra::Session' => {
 	     id => $session->id,

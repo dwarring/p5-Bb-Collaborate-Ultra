@@ -35,12 +35,18 @@ Return a hashref of attribute data types.
 
     sub freeze {
 	my $self = shift;
+	my $frozen = $self->TO_JSON(@_);
+	to_json $frozen, { convert_blessed => 1};
+    }
+
+    sub TO_JSON {
+	my $self = shift;
 	my $types = $self->_property_types;
-	my $data = shift // { {
+	my $data = shift // {
 	    map { $_ => $self->$_ }
 	    grep { defined $self->$_ }
-	    (keys %{$types})
-	    } };
+	    (keys %$types)
+	    };
 
 	my %frozen;
 
@@ -53,9 +59,7 @@ Return a hashref of attribute data types.
 		warn "ignoring field: $fld";
 	    }
 	}
-
-	my $payload = to_json \%frozen;
-	$payload;
+	\%frozen;
     }
 
     sub thaw {

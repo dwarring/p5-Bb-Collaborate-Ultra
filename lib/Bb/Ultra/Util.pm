@@ -44,7 +44,7 @@ package Bb::Ultra::Util {
 		    $year+1900, $mon+1, $day, $hr, $min, $sec;
 		}
 		elsif ($type =~ m{^Ref|Any|Hash}ix) {
-		    $_ = undef;
+		    # pass through
 		}
 		else {
 		    die "unable to convert $raw_val to $type\n"
@@ -91,6 +91,7 @@ package Bb::Ultra::Util {
 		$_ = str2time $_;
 	    }
 	    elsif ($type =~ m{^Ref|Any|Hash}ix) {
+		# pass through
 	    }
 	    else {
 		die "unknown type: $type";

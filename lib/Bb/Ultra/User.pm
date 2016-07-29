@@ -6,6 +6,7 @@ use Mouse::Util::TypeConstraints;
 coerce 'Bb::Ultra::User' => from 'HashRef' => via {
     Bb::Ultra::User->new( $_ )
 };
+__PACKAGE__->resource('users');
 __PACKAGE__->load_schema(<DATA>);
 # downloaded from https://xx-csa.bbcollab.com/documentation
 1;

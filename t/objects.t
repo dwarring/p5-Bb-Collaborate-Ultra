@@ -1,7 +1,7 @@
 use warnings; use strict;
-use Test::More tests => 16;
+use Test::More tests => 20;
 use Test::Fatal;
-
+use JSON;
 # ----------------------------------------------------------------
 use Bb::Ultra::Session;
 
@@ -43,12 +43,14 @@ is exception { $user = Bb::Ultra::User->new(\%user_data)}, undef, 'create user -
 isa_ok $user, 'Bb::Ultra::User', 'user';
 is $user->id, 'xyz345', 'user->id';
 is $user->userName, 'Alice', 'user->userName';
+my $thawed;
+is exception { $thawed = from_json $user->freeze, }, undef, 'user freeze/thaw round trip - lives';
+is_deeply $thawed, \%user_data, 'user freeze/thaw round trip - data';
 
 # ----------------------------------------------------------------
 use Bb::Ultra::LaunchContext;
 
 my %launch_context_data = (
-    'id' => 'zz123',
     'launchingRole' => 'participant',
     'user' => {
 	'id' => 'xyz248',
@@ -67,6 +69,9 @@ $user = $launch_context->user;
 isa_ok $user, 'Bb::Ultra::User', 'launch_context->user';
 is $user->id, 'xyz248', 'launch_context->user->id';
 is $user->userName, 'Bob', 'launch_context->user->userName';
+
+is exception { $thawed = from_json $launch_context->freeze }, undef, 'launch context freeze/thaw round-trip - lives';
+is_deeply $thawed, \%launch_context_data, 'launch context freeze/thaw round trip - data';
 
 # ----------------------------------------------------------------
 done_testing;
