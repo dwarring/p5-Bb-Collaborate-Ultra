@@ -16,8 +16,9 @@ sub test_connection {
 	my %params = (
 	    issuer => $issuer, secret => $secret, host => $host,
 	    );
-	my $connection =  Bb::Ultra::Connection->new(\%params);
-	$connection->debug(  $ENV{'BB_ULTRA_DEBUG'} );
+	require Bb::Ultra::Connection;
+	my $connection = Bb::Ultra::Connection->new(\%params);
+	$connection->debug( $ENV{'BB_ULTRA_DEBUG'} );
 	$params{connection} = $connection;
 	return %params
     }

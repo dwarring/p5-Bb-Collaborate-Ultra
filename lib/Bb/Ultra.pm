@@ -2,12 +2,13 @@ use Class::Data::Inheritable;
 package Bb::Ultra; BEGIN {
     use warnings; use strict;
     use Mouse;
-    use parent qw{Class::Data::Inheritable};
+    use parent qw{Class::Data::Inheritable Class::Accessor};
     use JSON;
     use Bb::Ultra::Util;
 
     __PACKAGE__->mk_classdata('_types');
     __PACKAGE__->mk_classdata('resource');
+    __PACKAGE__->mk_accessors('connection');
 
 =head2 property_types
 
@@ -87,7 +88,12 @@ Return a hashref of attribute data types.
 	my $class = shift;
 	my $payload = shift;
 	my $data = $class->thaw($payload);
-	$class->new($data);
+	my %opt = @_;
+	my $obj = $class->new($data);
+	for ($opt{connection}) {
+	    $obj->connection($_) if $_
+	}
+	$obj;
     }
 
     sub load_schema {
@@ -118,6 +124,34 @@ Return a hashref of attribute data types.
 		$prop => (isa => $isa, is => 'rw', required => $required)
 		);
 	}
+    }
+
+    sub path {
+	my $self = shift;
+	my $path = $self->resource;
+	my $id = ref $self && $self->id;
+	$id ? $path . '/' . $id : $path;
+    }
+
+    sub put {
+	my $class = shift;
+	my $connection = shift
+	    || die 'Not connected';
+	my $data = shift;
+        my $msg = $connection->put($class, $data, @_);
+	my $obj = $class->construct($msg);
+	$obj->connection($connection);
+	$obj;
+    }
+
+    sub del {
+	my $self = shift;
+	my $connection = shift
+	    || $self->connection
+	    || die 'Not connected';
+	my $class = ref $self;
+	my $data = {id => $self->id};
+        $connection->del($class, $data);
     }
 
     #

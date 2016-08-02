@@ -71,15 +71,13 @@ package Bb::Ultra::Connection {
 	my $class = shift;
 	my $data = shift;
 	my %opt = @_;
-
-	my $path = $opt{path} // $class->resource;
 	my $json = $class->freeze($data);
+	my $path = $opt{path} // $class->resource;
 	$self->client->POST($path, $json, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
         },);
-	my $msg = $self->response;
-	$class->construct($msg);
+	$self->response;
     }
 
     sub get {

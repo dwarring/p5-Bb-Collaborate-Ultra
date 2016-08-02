@@ -1,9 +1,23 @@
 package Bb::Ultra::Session;
 use warnings; use strict;
 use Mouse;
+use JSON;
 extends 'Bb::Ultra';
 __PACKAGE__->resource('sessions');
 __PACKAGE__->load_schema(<DATA>);
+
+use Bb::Ultra::LaunchContext;
+
+sub launch {
+    my $self = shift;
+    my $data = shift;
+    my $connection = shift || $self->connection;
+    my $path = $self->path.'/url';
+    my $response = $connection->put( 'Bb::Ultra::LaunchContext' => $data, path => $path);
+    my $msg = from_json $response;
+    $msg->{url};
+}
+
 1;
 # downloaded from https://xx-csa.bbcollab.com/documentation
 __DATA__
