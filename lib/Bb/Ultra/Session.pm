@@ -7,6 +7,7 @@ __PACKAGE__->resource('sessions');
 __PACKAGE__->load_schema(<DATA>);
 
 use Bb::Ultra::LaunchContext;
+use Bb::Ultra::SessionEnrollment;
 
 sub launch {
     my $self = shift;
@@ -16,6 +17,14 @@ sub launch {
     my $response = $connection->put( 'Bb::Ultra::LaunchContext' => $data, path => $path);
     my $msg = from_json $response;
     $msg->{url};
+}
+
+sub enrollments {
+    my $self = shift;
+    my $data = shift;
+    my $connection = shift || $self->connection;
+    my $path = $self->path.'/enrollments';
+    $connection->get( 'Bb::Ultra::SessionEnrollment' => {}, path => $path);
 }
 
 1;

@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 4;
+use Test::More tests => 7;
 use Test::Fatal;
 use Date::Parse;
 use lib '.';
@@ -8,26 +8,35 @@ use t::Ultra;
 SKIP: {
     my %t = t::Ultra->test_connection;
     my $connection = $t{connection};
-    skip $t{skip} || 'skipping live tests', 4
+    skip $t{skip} || 'skipping live tests', 7
 	unless $connection;
 
     $connection->connect;
+
+    my $start = time() + 60;
+    my $end = $start + 900;
 
     use Bb::Ultra::Session;
     my $session;
     is exception {
 	$session = Bb::Ultra::Session->put($connection, {
 	    name => 'Test Session',
-	    startTime => str2time "2016-12-01T21:32:00.937Z",
-	    endTime   => str2time "2016-12-01T22:32:00.937Z",
+	    startTime => $start,
+	    endTime   => $end,
 	    },
 	)
     }, undef, "session put - lives";
 
+    is $session->name, 'Test Session', 'session name';
+    is $session->startTime, $start, 'session start';
+    is $session->endTime, $end, 'session end';
+
     my $user = Bb::Ultra::User->new({
-	email => 'arnold.gerard@blackboard.com',
-	firstName => 'Arnold',
-	lastName => 'Gerard',
+	extId => 'testLaunchUser',
+	displayName => 'David Warring',
+	email => 'david.warring@gmail.com',
+	firstName => 'David',
+	lastName => 'Warring',
     });
 
     my $url;
@@ -41,6 +50,8 @@ SKIP: {
 
     ok $url, "got launch_context url";
     warn "url: $url";
+
+    my @enrollments = $session->enrollments;
 
     is exception { $session->del }, undef, 'session->del - lives';
 

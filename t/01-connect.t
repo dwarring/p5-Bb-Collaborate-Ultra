@@ -36,12 +36,14 @@ SKIP: {
 	or diag "expires: $expires";
 
     use Bb::Ultra::Session;
+    my $start = $t + 300;
+    my $end = $start + 1800;
 
     my $msg = $connection->put(
 	'Bb::Ultra::Session' => {
 	    name => 'Test Session',
-	    startTime => str2time "2016-12-01T21:32:00.937Z",
-	    endTime   => str2time "2016-12-01T22:32:00.937Z",
+	    startTime => $start,
+	    endTime   => $end,
 	});
     my $session = Bb::Ultra::Session->construct($msg);
     ok $session->created, "session creation";

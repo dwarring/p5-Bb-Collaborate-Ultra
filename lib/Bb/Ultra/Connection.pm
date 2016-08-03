@@ -84,10 +84,12 @@ package Bb::Ultra::Connection {
 	my $self = shift;
 	my $class = shift;
 	my $data = shift || {};
+	my %opt = @_;
 
-	my $path = $class->resource;
-	$path .= '/' . $data->{id}
-	    if $data->{id};
+	my $path = $opt{path};
+	$path //= $data->{id}
+	        ? $class->resource . '/' . $data->{id}
+	        : $class->resource;
 	
 	$self->client->GET($path, {
 	    'Content-Type' => 'application/json',
