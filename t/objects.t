@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 20;
+use Test::More tests => 24;
 use Test::Fatal;
 use JSON;
 # ----------------------------------------------------------------
@@ -28,6 +28,12 @@ is exception { $session = Bb::Ultra::Session->new(\%session_data)}, undef, 'crea
 
 isa_ok $session, 'Bb::Ultra::Session', 'session';
 is $session->id, 'abc123456', 'session->id';
+
+isnt exception { $session->guestRole('lacky') }, undef, 'enum - invalid';
+isnt  $session->guestRole, 'lacky', 'enum - invalid';
+
+is exception { $session->guestRole('participant') }, undef, 'enum - valid';
+is  $session->guestRole, 'participant', 'enum - valid';
 
 # ----------------------------------------------------------------
 use Bb::Ultra::User;

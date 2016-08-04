@@ -5,10 +5,13 @@ package Bb::Ultra; BEGIN {
     use parent qw{Class::Data::Inheritable Class::Accessor};
     use JSON;
     use Bb::Ultra::Util;
+    use Mouse::Util::TypeConstraints;
 
     __PACKAGE__->mk_classdata('_types');
     __PACKAGE__->mk_classdata('resource');
     __PACKAGE__->mk_accessors('connection');
+
+    our %enums;
 
 =head2 property_types
 
@@ -105,17 +108,26 @@ Return a hashref of attribute data types.
 
 	foreach my $prop (sort keys %$properties) {
 	    next if $class->meta->get_attribute($prop);
-	    my $type = $properties->{$prop}{type}
+	    my $isa;
+	    if (my $enum = $properties->{$prop}{enum}) {
+		my @enum = map { lc } (@$enum);
+		# create an anonymous enumeration
+		my $enum_name = 'enum(' . join('|', @enum) . ')';
+		$isa = $enums{$enum_name} //= Mouse::Util::TypeConstraints::enum( $enum_name, \@enum);
+	    }
+	    else {
+		my $type = $properties->{$prop}{type}
 	        or die "property has no type: $prop";
-            my $isa = {string => 'Str',
-		       boolean => 'Bool',
-		       array  => 'Array',
-		       object => 'Object',
-	    }->{$type}
-	        or die "unknown type: $type";
-	    if ($type eq 'Array' || $type eq 'Object') {
-		warn "ignoring $prop array/object";
-		next;
+		$isa = {string => 'Str',
+			boolean => 'Bool',
+			array  => 'Array',
+			object => 'Object',
+		}->{$type}
+	            or die "unknown type: $type";
+		if ($type eq 'Array' || $type eq 'Object') {
+		    warn "ignoring $prop array/object. Predeclare in $class?";
+		    next;
+		}
 	    }
 	    my $format = $properties->{$prop}{format};
 	    $isa = 'Date' if $format && $format eq 'DATE_TIME';
