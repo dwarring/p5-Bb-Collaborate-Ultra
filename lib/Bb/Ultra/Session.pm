@@ -14,7 +14,7 @@ sub launch {
     my $data = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/url';
-    my $response = $connection->put( 'Bb::Ultra::LaunchContext' => $data, path => $path);
+    my $response = $connection->post( 'Bb::Ultra::LaunchContext' => $data, path => $path);
     my $msg = from_json $response;
     $msg->{url};
 }
@@ -24,7 +24,7 @@ sub enrollments {
     my $data = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/enrollments';
-    $connection->get( 'Bb::Ultra::SessionEnrollment' => {}, path => $path);
+    $connection->get( 'Bb::Ultra::SessionEnrollment' => {}, path => $path, parent => $self);
 }
 
 1;

@@ -6,10 +6,14 @@ package Bb::Ultra; BEGIN {
     use JSON;
     use Bb::Ultra::Util;
     use Mouse::Util::TypeConstraints;
+    use Data::Compare;
+    use Storable;
 
     __PACKAGE__->mk_classdata('_types');
+    __PACKAGE__->mk_classdata('_db_data');
     __PACKAGE__->mk_classdata('resource');
     __PACKAGE__->mk_accessors('connection');
+    __PACKAGE__->mk_accessors('parent');
 
     our %enums;
 
@@ -43,14 +47,19 @@ Return a hashref of attribute data types.
 	to_json $frozen, { convert_blessed => 1};
     }
 
+    sub _raw_data {
+	my $self = shift;
+	my $types = $self->_property_types;
+	my %data = (map { $_ => $self->$_ }
+		    grep { defined $self->$_ }
+		    (keys %$types));
+	\%data;
+    }
+
     sub TO_JSON {
 	my $self = shift;
 	my $types = $self->_property_types;
-	my $data = shift // {
-	    map { $_ => $self->$_ }
-	    grep { defined $self->$_ }
-	    (keys %$types)
-	    };
+	my $data = shift // $self->_raw_data;
 
 	my %frozen;
 
@@ -96,6 +105,11 @@ Return a hashref of attribute data types.
 	for ($opt{connection}) {
 	    $obj->connection($_) if $_
 	}
+	for ($opt{parent}) {
+	    $obj->parent($_) if $_;
+	}
+	# make a copy, so we can detect updates
+	$obj->_db_data(Storable::dclone $data);
 	$obj;
     }
 
@@ -140,19 +154,59 @@ Return a hashref of attribute data types.
 
     sub path {
 	my $self = shift;
-	my $path = $self->resource;
+	my $path = '';
+	$path .= $self->parent->path . '/'
+	    if ref($self) && $self->parent;
+	$path .= $self->resource;
 	my $id = ref $self && $self->id;
 	$id ? $path . '/' . $id : $path;
     }
 
-    sub put {
+    sub _pending_updates {
+	my $self = shift;
+	my $data = $self->_raw_data;
+	if (my $old_data = $self->_db_data) {
+	    # include only key and changed data
+	    for my $fld (sort keys %$data) {
+		# ignore time-stamps
+		my $new_val = $data->{$fld};
+		my $old_val = $old_data->{$fld};
+		my $keep;
+		unless ($fld eq 'modified' || $fld eq 'created') {
+		    $keep = $fld eq 'id'
+			## seems we need to pass these!?
+			|| $fld eq 'startTime' || $fld eq 'endTime'
+			|| !defined($old_val)
+			|| !Compare($old_val, $new_val);
+		}
+		delete $data->{$fld}
+	            unless $keep;
+	    }
+	}
+	$data;
+    }
+
+    sub post {
 	my $class = shift;
-	my $connection = shift
-	    || die 'Not connected';
-	my $data = shift;
-        my $msg = $connection->put($class, $data, @_);
-	my $obj = $class->construct($msg);
-	$obj->connection($connection);
+	my $connection = shift || die "no connection";
+	my $data = shift || die "no data";
+
+        my $msg = $connection->post($class, $data, @_);
+	$class->construct($msg, connection => $connection);
+    }
+
+    sub put {
+	my $self = shift;
+	my $connection = $self->connection
+	    || die "no connected";
+	my $data = $self->TO_JSON($self->_pending_updates);
+	my $path = $self->path;
+        my $msg = $connection->put(ref($self), $data, path => $path, @_);
+	my $obj = $self->construct($msg, connection => $connection);
+	if ($self) {
+	    $self->_db_data( $obj->_db_data );
+	    $obj->parent($self->parent);
+	}
 	$obj;
     }
 

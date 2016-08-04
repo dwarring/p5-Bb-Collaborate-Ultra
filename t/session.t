@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 7;
+use Test::More tests => 13;
 use Test::Fatal;
 use Date::Parse;
 use lib '.';
@@ -8,7 +8,7 @@ use t::Ultra;
 SKIP: {
     my %t = t::Ultra->test_connection;
     my $connection = $t{connection};
-    skip $t{skip} || 'skipping live tests', 7
+    skip $t{skip} || 'skipping live tests', 13
 	unless $connection;
 
     $connection->connect;
@@ -19,17 +19,29 @@ SKIP: {
     use Bb::Ultra::Session;
     my $session;
     is exception {
-	$session = Bb::Ultra::Session->put($connection, {
+	$session = Bb::Ultra::Session->post($connection, {
 	    name => 'Test Session',
 	    startTime => $start,
 	    endTime   => $end,
 	    },
-	)
-    }, undef, "session put - lives";
+	);
+    }, undef, "session post - lives";
 
     is $session->name, 'Test Session', 'session name';
     is $session->startTime, $start, 'session start';
     is $session->endTime, $end, 'session end';
+
+    $session->name('Test Session - Updated');
+
+    my $updates = $session->_pending_updates;
+    is_deeply $updates, { 'id' => $session->id, name => 'Test Session - Updated', startTime => $session->startTime, endTime => $session->endTime, }, 'updateable data';
+    is exception { $session->put }, undef, 'put updates - lives';
+    $updates = $session->_pending_updates;
+    delete $updates->{active}; # ignore this
+    diag explain {updates => $updates};
+    is_deeply $updates, { 'id' => $session->id, , startTime => $session->startTime, endTime => $session->endTime,}, 'updates are flushed';
+    my @enrollments = $session->enrollments;
+    is scalar @enrollments, 0, 'no session enrolments yet';
 
     my $user = Bb::Ultra::User->new({
 	extId => 'testLaunchUser',
@@ -51,7 +63,11 @@ SKIP: {
     ok $url, "got launch_context url";
     warn "url: $url";
 
-    my @enrollments = $session->enrollments;
+    @enrollments = $session->enrollments;
+    is scalar @enrollments, 1, 'user is now enrolled';
+    my $enrollment = $enrollments[0];
+
+    is $enrollment->editingPermission, 'reader';
 
     is exception { $session->del }, undef, 'session->del - lives';
 

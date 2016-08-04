@@ -63,7 +63,22 @@ package Bb::Ultra::Connection {
 	$self->auth_start( time() );
 	$client->POST(JWT_TOKEN_ENDPOINT . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
 	my $auth_msg = $self->response($client);
-	$self->auth(  Bb::Ultra::Connection::Auth->construct($auth_msg) );
+	$self->auth(  Bb::Ultra::Connection::Auth->construct($auth_msg, connection => $self) );
+    }
+
+    sub post {
+	my $self = shift;
+	my $class = shift;
+	my $data = shift;
+	my %opt = @_;
+	my $json = $class->freeze($data);
+	my $path = $opt{path} // $class->path;
+	warn "POST: $path" if $self->debug;
+	$self->client->POST($path, $json, {
+	    'Content-Type' => 'application/json',
+	    'Authorization' => 'Bearer ' . $self->auth->access_token,
+        },);
+	$self->response;
     }
 
     sub put {
@@ -72,8 +87,9 @@ package Bb::Ultra::Connection {
 	my $data = shift;
 	my %opt = @_;
 	my $json = $class->freeze($data);
-	my $path = $opt{path} // $class->resource;
-	$self->client->POST($path, $json, {
+	my $path = $opt{path} || die "no PUT path";
+	warn "PUT: $path" if $self->debug;
+	$self->client->PUT($path, $json, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
         },);
@@ -91,14 +107,15 @@ package Bb::Ultra::Connection {
 	        ? $class->resource . '/' . $data->{id}
 	        : $class->resource;
 	
+	warn "GET: $path" if $self->debug;
 	$self->client->GET($path, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
         },);
 	my $msg = from_json $self->response;
 	$msg->{results}
-	    ? map { $class->construct($_) } @{ $msg->{results} }
-	    : $class->construct($msg);
+	    ? map { $class->construct($_, connection => $self, parent => $opt{parent}) } @{ $msg->{results} }
+	    : $class->construct($msg, connection => $self, parent => $opt{parent});
     }
 
     sub del {
@@ -111,6 +128,7 @@ package Bb::Ultra::Connection {
 	    unless $data->{id};
 	$path .= '/' . $data->{id};
 	
+	warn "DELETE: $path" if $self->debug;
 	$self->client->DELETE($path, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
