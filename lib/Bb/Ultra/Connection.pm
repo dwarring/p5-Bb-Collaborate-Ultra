@@ -106,7 +106,9 @@ package Bb::Ultra::Connection {
 	$path //= $data->{id}
 	        ? $class->resource . '/' . $data->{id}
 	        : $class->resource;
-	
+	if (keys %$data) {
+	    $path .= $self->client->buildQuery($data);
+	}
 	warn "GET: $path" if $self->debug;
 	$self->client->GET($path, {
 	    'Content-Type' => 'application/json',

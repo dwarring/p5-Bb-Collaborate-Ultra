@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 13;
+use Test::More tests => 14;
 use Test::Fatal;
 use Date::Parse;
 use lib '.';
@@ -8,7 +8,7 @@ use t::Ultra;
 SKIP: {
     my %t = t::Ultra->test_connection;
     my $connection = $t{connection};
-    skip $t{skip} || 'skipping live tests', 13
+    skip $t{skip} || 'skipping live tests', 14
 	unless $connection;
 
     $connection->connect;
@@ -38,7 +38,6 @@ SKIP: {
     is exception { $session->put }, undef, 'put updates - lives';
     $updates = $session->_pending_updates;
     delete $updates->{active}; # ignore this
-    diag explain {updates => $updates};
     is_deeply $updates, { 'id' => $session->id, , startTime => $session->startTime, endTime => $session->endTime,}, 'updates are flushed';
     my @enrollments = $session->enrollments;
     is scalar @enrollments, 0, 'no session enrolments yet';
@@ -61,13 +60,18 @@ SKIP: {
     }, undef, 'session launch_context - lives';
 
     ok $url, "got launch_context url";
-    warn "url: $url";
 
     @enrollments = $session->enrollments;
     is scalar @enrollments, 1, 'user is now enrolled';
     my $enrollment = $enrollments[0];
 
     is $enrollment->editingPermission, 'reader';
+
+    my @sessions = $connection->get( 'Bb::Ultra::Session' => {
+	limit => 5,
+    });
+
+    ok scalar @sessions <= 5 && scalar @sessions > 0, 'get sessions - with limits';
 
     is exception { $session->del }, undef, 'session->del - lives';
 
