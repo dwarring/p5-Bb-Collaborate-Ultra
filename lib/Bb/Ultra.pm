@@ -225,9 +225,9 @@ sub put {
     my $self = shift;
     my $connection = $self->connection
 	|| die "no connected";
-    my $data = $self->TO_JSON($self->_pending_updates);
+    my $update_data = $self->_pending_updates;
     my $path = $self->path;
-    my $msg = $connection->put(ref($self), $data, path => $path, @_);
+    my $msg = $connection->put(ref($self), $update_data, path => $path, @_);
     my $obj = $self->construct($msg, connection => $connection);
     if ($self) {
 	$self->_db_data( $obj->_db_data );

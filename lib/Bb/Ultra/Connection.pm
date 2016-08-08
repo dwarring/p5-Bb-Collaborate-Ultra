@@ -38,7 +38,6 @@ package Bb::Ultra::Connection {
     sub connect {
 	my $self = shift;
 	
-	use constant JWT_TOKEN_ENDPOINT => 'token';
 	use constant JWS_RSA_256 => 'HS256';
 	use constant JWT_EXPIRY => 4 * 60; # 4 minutes
 
@@ -59,11 +58,11 @@ package Bb::Ultra::Connection {
 	    grant_type => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
 	    assertion => $jwt,
 	});
-
+	my $class = 'Bb::Ultra::Connection::Auth';
 	$self->auth_start( time() );
-	$client->POST(JWT_TOKEN_ENDPOINT . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
+	$client->POST($class->path . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
 	my $auth_msg = $self->response($client);
-	$self->auth(  Bb::Ultra::Connection::Auth->construct($auth_msg, connection => $self) );
+	$self->auth( $class->construct($auth_msg, connection => $self) );
     }
 
     sub post {
@@ -72,8 +71,9 @@ package Bb::Ultra::Connection {
 	my $data = shift;
 	my %opt = @_;
 	my $json = $class->freeze($data);
-	my $path = $opt{path} // $class->path;
-	warn "POST: $path" if $self->debug;
+	my $path = $opt{path} // $class->path
+            or die "no POST path";
+	warn "POST: $path    $json" if $self->debug;
 	$self->client->POST($path, $json, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
@@ -87,8 +87,9 @@ package Bb::Ultra::Connection {
 	my $data = shift;
 	my %opt = @_;
 	my $json = $class->freeze($data);
-	my $path = $opt{path} || die "no PUT path";
-	warn "PUT: $path" if $self->debug;
+	my $path = $opt{path} // $class->path
+            or die "no PUT path";
+	warn "PUT: $path   $json" if $self->debug;
 	$self->client->PUT($path, $json, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
