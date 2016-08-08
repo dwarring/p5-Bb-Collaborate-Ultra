@@ -4,6 +4,13 @@ use Mouse;
 extends 'Bb::Ultra';
 __PACKAGE__->resource('recordings');
 __PACKAGE__->load_schema(<DATA>);
+
+__PACKAGE__->query_params(
+    name => 'Str',
+    contextId => 'Str',
+    startTime => 'Date',
+    endTime => 'Date'
+);
 # downloaded from https://xx-csa.bbcollab.com/documentation
 1;
 __DATA__

@@ -38,10 +38,25 @@ use 5.008003;
 __PACKAGE__->mk_classdata('_types');
 __PACKAGE__->mk_classdata('_db_data');
 __PACKAGE__->mk_classdata('resource');
+__PACKAGE__->mk_classdata('_query_params' => {
+    limit => 'Int',
+    offset => 'Int',
+    fields => 'Str',
+});
 __PACKAGE__->mk_accessors('connection');
 __PACKAGE__->mk_accessors('parent');
-
 our %enums;
+
+sub query_params {
+
+    my ($entity_class, %params) = @_;
+
+    for (keys %params) {
+	$entity_class->_query_params->{$_} = $params{$_};
+    }
+
+    return $entity_class->_query_params;
+}
 
 =head2 property_types
 
@@ -85,17 +100,19 @@ sub _raw_data {
 sub TO_JSON {
     my $self = shift;
     my $types = $self->_property_types;
+    my $param_types = $self->query_params;
     my $data = shift // $self->_raw_data;
 
     my %frozen;
 
     for my $fld (keys %$data) {
-	if (exists $types->{$fld}) {
+	my $type = $types->{$fld} // $param_types->{$fld};
+	if ($type) {
 	    my $val = $data->{$fld};
-	    $frozen{$fld} = Bb::Ultra::Util::freeze($val, $types->{$fld});
+	    $frozen{$fld} = Bb::Ultra::Util::freeze($val, $type);
 	}
 	else {
-	    warn "ignoring field: $fld";
+	    warn((ref($self) || $self).": ignoring field: $fld");
 	}
     }
     \%frozen;
@@ -162,6 +179,7 @@ sub load_schema {
 		    boolean => 'Bool',
 		    array  => 'Array',
 		    object => 'Object',
+		    integer => 'Int',
 	    }->{$type}
 		or die "unknown type: $type";
 	    if ($type eq 'Array' || $type eq 'Object') {

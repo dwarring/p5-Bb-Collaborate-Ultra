@@ -108,7 +108,7 @@ package Bb::Ultra::Connection {
 	        ? $class->resource . '/' . $data->{id}
 	        : $class->resource;
 	if (keys %$data) {
-	    $path .= $self->client->buildQuery($data);
+	    $path .= $self->client->buildQuery($class->TO_JSON($data));
 	}
 	warn "GET: $path" if $self->debug;
 	$self->client->GET($path, {

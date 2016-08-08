@@ -8,6 +8,11 @@ coerce 'Bb::Ultra::User' => from 'HashRef' => via {
 };
 __PACKAGE__->resource('users');
 __PACKAGE__->load_schema(<DATA>);
+
+__PACKAGE__->query_params(
+    name => 'Str',
+    extId => 'Str',
+);
 # downloaded from https://xx-csa.bbcollab.com/documentation
 1;
 __DATA__

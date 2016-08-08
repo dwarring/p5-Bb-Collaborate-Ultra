@@ -6,6 +6,15 @@ extends 'Bb::Ultra';
 __PACKAGE__->resource('sessions');
 __PACKAGE__->load_schema(<DATA>);
 
+__PACKAGE__->query_params(
+    name => 'Str',
+    userId => 'Str',
+    contextId => 'Str',
+    startTime => 'Date',
+    endTime => 'Date',
+    sessionCategory => 'Str',
+);
+
 use Bb::Ultra::LaunchContext;
 use Bb::Ultra::SessionEnrollment;
 
