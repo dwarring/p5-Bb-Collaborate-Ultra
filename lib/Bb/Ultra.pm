@@ -98,14 +98,14 @@ sub _raw_data {
 
 sub TO_JSON {
     my $self = shift;
-    my $types = $self->_property_types;
+    my $prop_types = $self->_property_types;
     my $param_types = $self->query_params;
     my $data = shift // $self->_raw_data;
 
     my %frozen;
 
     for my $fld (keys %$data) {
-	my $type = $types->{$fld} // $param_types->{$fld} // do {
+	my $type = $prop_types->{$fld} // $param_types->{$fld} // do {
 	    warn((ref($self) || $self).": unknown field/query-parameter: $fld");
 	    'Str'
 	};
@@ -260,6 +260,44 @@ sub del {
     my $class = ref $self;
     my $data = {id => $self->id};
     $connection->del($class, $data);
+}
+
+sub find_or_create {
+    my $class = shift;
+    my $connection = shift;
+    my $data = shift;
+
+    my $param_types = $class->query_params;
+    my $prop_types = $class->_property_types;
+    my %query;
+    my %body;
+
+    for my $fld (keys %$data) {
+	my $val = $data->{$fld};
+	if (exists $param_types->{$fld}) {
+	    $query{$fld} = $val;
+	}
+	elsif (exists $prop_types->{$fld}) {
+	    $body{$fld} = $val;
+	}
+	else {
+	    warn "$class: ignoring unknown field: $fld";
+	}
+    }
+    my @recs = $connection->get($class => \%query);
+    my $rec;
+    if (@recs) {
+	warn "$class: ambiguous find_or_create query: @{[ keys %query ]}\n"
+	    if @recs > 1;
+	$rec = $recs[0];
+	for (keys %body) {
+	    $rec->$_($body{$_});
+	}
+    }
+    else {
+	$rec = $connection->post($class => $data);
+    }
+    $rec;
 }
 
 #

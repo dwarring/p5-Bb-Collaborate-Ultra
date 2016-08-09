@@ -110,7 +110,7 @@ package Bb::Ultra::Connection {
 	if (keys %$data) {
 	    $path .= $self->client->buildQuery($class->TO_JSON($data));
 	}
-	warn "GET: $path" if $self->debug;
+	warn "GET: $path" if ref($self) && $self->debug;
 	$self->client->GET($path, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,

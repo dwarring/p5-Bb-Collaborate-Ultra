@@ -23,21 +23,14 @@ SKIP: {
 	extId => $ext_id,
     });
 
-    if (@contexts) {
-	$context = $contexts[0];
-	is $context->extId, $ext_id, "context extId";
-    }
-    else {
-	diag "creating new context: extId=$ext_id";
-	is exception {
-	    $context = Bb::Ultra::Context->post(
+    is exception {
+	$context = Bb::Ultra::Context->find_or_create(
 		$connection, {
 		extId => $ext_id,
 		name => $context_name,
 		label => uc $ext_id,
 	    });
 	}, undef, "context post - lives";
-    }
 
     isa_ok $context, 'Bb::Ultra::Context';
     ok $context->id, "context id";
