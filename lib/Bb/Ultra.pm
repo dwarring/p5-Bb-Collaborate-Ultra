@@ -48,7 +48,6 @@ __PACKAGE__->mk_accessors('parent');
 our %enums;
 
 sub query_params {
-
     my ($entity_class, %params) = @_;
 
     for (keys %params) {
@@ -106,14 +105,13 @@ sub TO_JSON {
     my %frozen;
 
     for my $fld (keys %$data) {
-	my $type = $types->{$fld} // $param_types->{$fld};
-	if ($type) {
-	    my $val = $data->{$fld};
-	    $frozen{$fld} = Bb::Ultra::Util::freeze($val, $type);
-	}
-	else {
-	    warn((ref($self) || $self).": ignoring field: $fld");
-	}
+	my $type = $types->{$fld} // $param_types->{$fld} // do {
+	    warn((ref($self) || $self).": unknown field/query-parameter: $fld");
+	    'Str'
+	};
+	    
+	my $val = $data->{$fld};
+	$frozen{$fld} = Bb::Ultra::Util::freeze($val, $type);
     }
     \%frozen;
 }

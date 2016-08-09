@@ -1,0 +1,10 @@
+*~
+*#*
+*.gz
+META.*
+MYMETA.*
+blib/
+pm_to_blib
+MANIFEST*
+Makefile
+inc/
