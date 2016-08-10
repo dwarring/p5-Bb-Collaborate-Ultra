@@ -2,9 +2,12 @@ package Bb::Collaborate::Ultra::User;
 use warnings; use strict;
 use Mouse;
 extends 'Bb::Collaborate::Ultra';
+
+has 'ltiLaunchDetails' => (isa => 'Any', is => 'rw');
+
 use Mouse::Util::TypeConstraints;
-coerce 'Bb::Collaborate::Ultra::User' => from 'HashRef' => via {
-    Bb::Collaborate::Ultra::User->new( $_ )
+coerce __PACKAGE__, from 'HashRef' => via {
+    __PACKAGE__->new( $_ )
 };
 __PACKAGE__->resource('users');
 __PACKAGE__->load_schema(<DATA>);

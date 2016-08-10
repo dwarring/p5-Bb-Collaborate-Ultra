@@ -3,9 +3,23 @@ use warnings; use strict;
 use Mouse;
 use JSON;
 extends 'Bb::Collaborate::Ultra';
+
+use Bb::Collaborate::Ultra::Session::Occurrence;
+use Bb::Collaborate::Ultra::Session::RecurrenceRule;
+use Mouse::Util::TypeConstraints;
+
+subtype 'ArrayOfOccurrences',
+    as 'ArrayRef[Bb::Collaborate::Ultra::Session::Occurrence]';
+
+coerce 'ArrayOfOccurrences',
+    from 'ArrayRef[HashRef]',
+    via { [ map {Bb::Collaborate::Ultra::Session::Occurrence->new($_)} (@$_) ] };
+
+has 'occurrences' => (isa => 'ArrayOfOccurrences', is => 'rw', coerce => 1);
+has 'recurrenceRule' => (isa => 'Bb::Collaborate::Ultra::Session::RecurrenceRule', is => 'rw', coerce => 1);
+
 __PACKAGE__->resource('sessions');
 __PACKAGE__->load_schema(<DATA>);
-
 __PACKAGE__->query_params(
     name => 'Str',
     userId => 'Str',

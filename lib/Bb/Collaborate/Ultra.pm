@@ -154,6 +154,39 @@ sub construct {
     $obj;
 }
 
+sub _build_isa {
+    my $class = shift;
+    my $prop = shift;
+    my $prop_spec = shift;
+    my $isa;
+    my $type = $prop_spec->{type}
+       or die "property has no type: $prop";
+    if ($type eq 'array') {
+       my $of_type = $class->_build_isa($prop, $prop_spec->{items});
+       $isa = 'ArrayRef[' . $of_type . ']';
+    }
+    elsif (my $enum = $prop_spec->{enum}) {
+       my @enum = map { lc } (@$enum);
+       # create an anonymous enumeration
+       my $enum_name = 'enum_' . join('_', @enum);
+       $isa = $enums{$enum_name} //= Mouse::Util::TypeConstraints::enum( $enum_name, \@enum);
+    }
+    else {
+       $isa = {string => 'Str',
+               boolean => 'Bool',
+               integer => 'Int',
+               object => 'Object',
+       }->{$type}
+           or die "unknown type: $type";
+       if ($isa eq 'Object' || $isa eq 'Array') {
+           warn "unknown $prop object. Predeclare in $class?";
+       }
+    }
+    my $format = $prop_spec->{format};
+    $isa = 'Date' if $format && $format eq 'DATE_TIME';
+    $isa;
+}
+
 sub load_schema {
     my $class = shift;
     my $data = join("", @_);
@@ -163,33 +196,11 @@ sub load_schema {
 
     foreach my $prop (sort keys %$properties) {
 	next if $class->meta->get_attribute($prop);
-	my $isa;
-	if (my $enum = $properties->{$prop}{enum}) {
-	    my @enum = map { lc } (@$enum);
-	    # create an anonymous enumeration
-	    my $enum_name = 'enum(' . join('|', @enum) . ')';
-	    $isa = $enums{$enum_name} //= Mouse::Util::TypeConstraints::enum( $enum_name, \@enum);
-	}
-	else {
-	    my $type = $properties->{$prop}{type}
-	    or die "property has no type: $prop";
-	    $isa = {string => 'Str',
-		    boolean => 'Bool',
-		    array  => 'Array',
-		    object => 'Object',
-		    integer => 'Int',
-	    }->{$type}
-		or die "unknown type: $type";
-	    if ($type eq 'Array' || $type eq 'Object') {
-		warn "ignoring $prop array/object. Predeclare in $class?";
-		next;
-	    }
-	}
-	my $format = $properties->{$prop}{format};
-	$isa = 'Date' if $format && $format eq 'DATE_TIME';
-	my $required = $properties->{$prop}{required} ? 1 : 0;
+	my $prop_spec = $properties->{$prop};
+	my $isa = $class->_build_isa( $prop, $prop_spec);
+	my $required = $prop_spec->{required} ? 1 : 0;
 	$class->meta->add_attribute(
-	    $prop => (isa => $isa, is => 'rw', required => $required)
+	    $prop => (isa => $isa, is => 'rw', required => $required),
 	    );
     }
 }

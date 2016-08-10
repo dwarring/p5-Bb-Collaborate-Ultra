@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 24;
+use Test::More tests => 27;
 use Test::Fatal;
 use JSON;
 # ----------------------------------------------------------------
@@ -17,6 +17,9 @@ my %session_data = (
     id => 'abc123456',
     startTime => $now,
     name => 'test session object',
+    occurrences => [
+	{ id => 'xyz248', startTime => $now, endTime => $now + 60 },
+    ],
     );
 
 isnt exception { Bb::Collaborate::Ultra::Session->new(\%session_data)}, undef, 'create session without required - dies';
@@ -34,6 +37,10 @@ isnt  $session->guestRole, 'lacky', 'enum - invalid';
 
 is exception { $session->guestRole('participant') }, undef, 'enum - valid';
 is  $session->guestRole, 'participant', 'enum - valid';
+
+isa_ok $session->occurrences, 'ARRAY', 'sub-object coercement';
+isa_ok $session->occurrences->[0], 'Bb::Collaborate::Ultra::Session::Occurrence', 'sub-object coercement';
+is $session->occurrences->[0]->id, 'xyz248', 'sub-object coercement';
 
 # ----------------------------------------------------------------
 use Bb::Collaborate::Ultra::User;
