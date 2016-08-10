@@ -1,8 +1,8 @@
-package Bb::Ultra::Session;
+package Bb::Collaborate::Ultra::Session;
 use warnings; use strict;
 use Mouse;
 use JSON;
-extends 'Bb::Ultra';
+extends 'Bb::Collaborate::Ultra';
 __PACKAGE__->resource('sessions');
 __PACKAGE__->load_schema(<DATA>);
 
@@ -15,15 +15,15 @@ __PACKAGE__->query_params(
     sessionCategory => 'Str',
 );
 
-use Bb::Ultra::LaunchContext;
-use Bb::Ultra::SessionEnrollment;
+use Bb::Collaborate::Ultra::LaunchContext;
+use Bb::Collaborate::Ultra::SessionEnrollment;
 
 sub launch {
     my $self = shift;
     my $data = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/url';
-    my $response = $connection->post( 'Bb::Ultra::LaunchContext' => $data, path => $path);
+    my $response = $connection->post( 'Bb::Collaborate::Ultra::LaunchContext' => $data, path => $path);
     my $msg = from_json $response;
     $msg->{url};
 }
@@ -33,7 +33,7 @@ sub enrollments {
     my $data = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/enrollments';
-    $connection->get( 'Bb::Ultra::SessionEnrollment' => {}, path => $path, parent => $self);
+    $connection->get( 'Bb::Collaborate::Ultra::SessionEnrollment' => {}, path => $path, parent => $self);
 }
 
 1;

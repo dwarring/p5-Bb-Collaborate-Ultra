@@ -4,7 +4,7 @@ use Test::Fatal;
 use Date::Parse;
 use lib '.';
 use t::Ultra;
-use Bb::Ultra::Context;
+use Bb::Collaborate::Ultra::Context;
 
 SKIP: {
     my %t = t::Ultra->test_connection;
@@ -19,12 +19,12 @@ SKIP: {
     my $context_name = "context.t: ".$ext_id;
 
     my $context;
-    my @contexts = $connection->get( 'Bb::Ultra::Context' => {
+    my @contexts = $connection->get( 'Bb::Collaborate::Ultra::Context' => {
 	extId => $ext_id,
     });
 
     is exception {
-	$context = Bb::Ultra::Context->find_or_create(
+	$context = Bb::Collaborate::Ultra::Context->find_or_create(
 		$connection, {
 		extId => $ext_id,
 		name => $context_name,
@@ -32,7 +32,7 @@ SKIP: {
 	    });
 	}, undef, "context post - lives";
 
-    isa_ok $context, 'Bb::Ultra::Context';
+    isa_ok $context, 'Bb::Collaborate::Ultra::Context';
     ok $context->id, "context id";
 
 }

@@ -16,10 +16,10 @@ SKIP: {
     my $start = time() + 60;
     my $end = $start + 900;
 
-    use Bb::Ultra::Session;
+    use Bb::Collaborate::Ultra::Session;
     my $session;
     is exception {
-	$session = Bb::Ultra::Session->post($connection, {
+	$session = Bb::Collaborate::Ultra::Session->post($connection, {
 	    name => 'Test Session',
 	    startTime => $start,
 	    endTime   => $end,
@@ -42,7 +42,7 @@ SKIP: {
     my @enrollments = $session->enrollments;
     is scalar @enrollments, 0, 'no session enrolments yet';
 
-    my $user = Bb::Ultra::User->new({
+    my $user = Bb::Collaborate::Ultra::User->new({
 	extId => 'testLaunchUser',
 	displayName => 'David Warring',
 	email => 'david.warring@gmail.com',
@@ -67,7 +67,7 @@ SKIP: {
 
     is $enrollment->editingPermission, 'reader';
 
-    my @sessions = $connection->get( 'Bb::Ultra::Session' => {
+    my @sessions = $connection->get( 'Bb::Collaborate::Ultra::Session' => {
 	limit => 5,
     });
 

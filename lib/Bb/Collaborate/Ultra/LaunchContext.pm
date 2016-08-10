@@ -1,9 +1,9 @@
-package Bb::Ultra::LaunchContext;
+package Bb::Collaborate::Ultra::LaunchContext;
 use warnings; use strict;
 use Mouse;
-extends 'Bb::Ultra';
-use Bb::Ultra::User;
-has 'user' => (isa => 'Bb::Ultra::User', is => 'rw', coerce => 1);
+extends 'Bb::Collaborate::Ultra';
+use Bb::Collaborate::Ultra::User;
+has 'user' => (isa => 'Bb::Collaborate::Ultra::User', is => 'rw', coerce => 1);
 __PACKAGE__->load_schema(<DATA>);
 1;
 # downloaded from https://xx-csa.bbcollab.com/documentation

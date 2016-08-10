@@ -4,7 +4,7 @@ use Test::Fatal;
 use Date::Parse;
 use lib '.';
 use t::Ultra;
-use Bb::Ultra::Recording;
+use Bb::Collaborate::Ultra::Recording;
 
 SKIP: {
     my %t = t::Ultra->test_connection;
@@ -14,7 +14,7 @@ SKIP: {
 
     $connection->connect;
 
-    my @recordings = $connection->get( 'Bb::Ultra::Recording' => {
+    my @recordings = $connection->get( 'Bb::Collaborate::Ultra::Recording' => {
 	limit => 5,
 	startTime => time() - 7 * 60 * 60 * 24,
     });
@@ -24,7 +24,7 @@ SKIP: {
     ok scalar @recordings <= 5 && scalar @recordings > 0, 'get sessions - with limits';
 
     my $recording = $recordings[0];
-    isa_ok $recording, 'Bb::Ultra::Recording';
+    isa_ok $recording, 'Bb::Collaborate::Ultra::Recording';
     ok $recording->sessionStartTime;
 
 }

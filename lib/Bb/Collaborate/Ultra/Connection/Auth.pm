@@ -1,6 +1,6 @@
-package Bb::Ultra::Connection::Auth {
+package Bb::Collaborate::Ultra::Connection::Auth {
     use Mouse;
-    extends 'Bb::Ultra';
+    extends 'Bb::Collaborate::Ultra';
     use warnings; use strict;
     __PACKAGE__->resource('token');
     has 'access_token' => (is => 'rw', isa => 'Str');

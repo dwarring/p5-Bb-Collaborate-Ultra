@@ -28,24 +28,24 @@ SKIP: {
 
     my $auth = $connection->auth;
 
-    isa_ok $auth, 'Bb::Ultra::Connection::Auth', 'auth';
+    isa_ok $auth, 'Bb::Collaborate::Ultra::Connection::Auth', 'auth';
     ok $auth->access_token, 'access_token';
     my $expires = $auth->expires_in;
     ok $expires, 'expires_in';
     ok $expires > 0 && $expires <= 1000, 'expires_in'
 	or diag "expires: $expires";
 
-    use Bb::Ultra::Session;
+    use Bb::Collaborate::Ultra::Session;
     my $start = $t + 300;
     my $end = $start + 1800;
 
     my $msg = $connection->post(
-	'Bb::Ultra::Session' => {
+	'Bb::Collaborate::Ultra::Session' => {
 	    name => 'Test Session',
 	    startTime => $start,
 	    endTime   => $end,
 	});
-    my $session = Bb::Ultra::Session->construct($msg, connection => $connection);
+    my $session = Bb::Collaborate::Ultra::Session->construct($msg, connection => $connection);
     my $session_id = $session->id;
     ok $session_id, 'got session_id';
     ok $session->created, "session creation";
@@ -54,7 +54,7 @@ SKIP: {
 
     $session = undef;
 
-    $session = $connection->get('Bb::Ultra::Session' => {
+    $session = $connection->get('Bb::Collaborate::Ultra::Session' => {
 	id => $session_id,
     });
 
@@ -63,7 +63,7 @@ SKIP: {
 	or diag "created: " .  $session->created;
 
     is exception {
-	$connection->del('Bb::Ultra::Session' => {
+	$connection->del('Bb::Collaborate::Ultra::Session' => {
 	    id => $session->id,
 	});
     }, undef, "session deletion lives";

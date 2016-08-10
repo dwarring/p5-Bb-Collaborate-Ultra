@@ -1,18 +1,18 @@
-package Bb::Ultra::Connection {
+package Bb::Collaborate::Ultra::Connection {
     use warnings; use strict;
-    use Bb::Ultra;
+    use Bb::Collaborate::Ultra;
     use Crypt::JWT qw(encode_jwt decode_jwt);
     use JSON;
     use Mouse;
     use REST::Client;
-    use Bb::Ultra::Connection::Auth;
+    use Bb::Collaborate::Ultra::Connection::Auth;
 
     has 'issuer' => (is => 'rw', isa => 'Str', required => 1);
     has 'secret' => (is => 'rw', isa => 'Str', required => 1);
     has 'host'   => (is => 'rw', isa => 'Str', required => 1);
 
     has 'client' => (is => 'rw', isa => 'REST::Client' );
-    has 'auth'  =>  (is => 'rw', isa => 'Bb::Ultra::Connection::Auth' ); 
+    has 'auth'  =>  (is => 'rw', isa => 'Bb::Collaborate::Ultra::Connection::Auth' ); 
     has 'auth_start'  =>  (is => 'rw', isa => 'Int' );
     has 'debug'  =>  (is => 'rw', isa => 'Int' );
 
@@ -58,7 +58,7 @@ package Bb::Ultra::Connection {
 	    grant_type => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
 	    assertion => $jwt,
 	});
-	my $class = 'Bb::Ultra::Connection::Auth';
+	my $class = 'Bb::Collaborate::Ultra::Connection::Auth';
 	$self->auth_start( time() );
 	$client->POST($class->path . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
 	my $auth_msg = $self->response($client);

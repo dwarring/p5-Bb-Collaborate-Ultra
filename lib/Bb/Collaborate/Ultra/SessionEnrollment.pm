@@ -1,7 +1,7 @@
-package Bb::Ultra::SessionEnrollment;
+package Bb::Collaborate::Ultra::SessionEnrollment;
 use warnings; use strict;
 use Mouse;
-extends 'Bb::Ultra';
+extends 'Bb::Collaborate::Ultra';
 __PACKAGE__->resource('enrollments');
 __PACKAGE__->load_schema(<DATA>);
 # downloaded from https://xx-csa.bbcollab.com/documentation

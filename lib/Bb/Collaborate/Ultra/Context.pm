@@ -1,7 +1,7 @@
-package Bb::Ultra::Context;
+package Bb::Collaborate::Ultra::Context;
 use warnings; use strict;
 use Mouse;
-extends 'Bb::Ultra';
+extends 'Bb::Collaborate::Ultra';
 __PACKAGE__->resource('contexts');
 __PACKAGE__->load_schema(<DATA>);
 

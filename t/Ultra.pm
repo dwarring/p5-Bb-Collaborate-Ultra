@@ -8,23 +8,23 @@ sub test_connection {
     my $suffix = $opt{suffix} || '';
     my %result;
 
-    my $issuer = $ENV{'BB_ULTRA_ISSUER'};
-    my $secret = $ENV{'BB_ULTRA_SECRET'};
-    my $host   = $ENV{'BB_ULTRA_HOST'};
+    my $issuer = $ENV{'BBC_ULTRA_ISSUER'};
+    my $secret = $ENV{'BBC_ULTRA_SECRET'};
+    my $host   = $ENV{'BBC_ULTRA_HOST'};
 
     if ($issuer && $secret && $host) {
 	my %params = (
 	    issuer => $issuer, secret => $secret, host => $host,
 	    );
-	require Bb::Ultra::Connection;
-	my $connection = Bb::Ultra::Connection->new(\%params);
-	$connection->debug( $ENV{'BB_ULTRA_DEBUG'} );
+	require Bb::Collaborate::Ultra::Connection;
+	my $connection = Bb::Collaborate::Ultra::Connection->new(\%params);
+	$connection->debug( $ENV{'BBC_ULTRA_DEBUG'} );
 	$params{connection} = $connection;
 	return %params
     }
     else {
 	return (
-	    skip => 'Please set BB_ULTRA_{ISSUER|SECRET|URL}',
+	    skip => 'Please set BBC_ULTRA_{ISSUER|SECRET|URL}',
 	)
     }
 }

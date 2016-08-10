@@ -1,17 +1,17 @@
 use Class::Data::Inheritable;
-package Bb::Ultra;
+package Bb::Collaborate::Ultra;
 use warnings; use strict;
 use Mouse;
 use parent qw{Class::Data::Inheritable Class::Accessor};
 use JSON;
-use Bb::Ultra::Util;
+use Bb::Collaborate::Ultra::Util;
 use Mouse::Util::TypeConstraints;
 use Data::Compare;
 use Clone;
 
 =head1 NAME
 
-Bb::Ultra - Perl bindings for Blackboard Ultra virtual classroms
+Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classroms
 
 =head1 VERSION
 
@@ -111,7 +111,7 @@ sub TO_JSON {
 	};
 	    
 	my $val = $data->{$fld};
-	$frozen{$fld} = Bb::Ultra::Util::freeze($val, $type);
+	$frozen{$fld} = Bb::Collaborate::Ultra::Util::freeze($val, $type);
     }
     \%frozen;
 }
@@ -128,7 +128,7 @@ sub thaw {
     for my $fld (keys %$data) {
 	if (exists $types->{$fld}) {
 	    my $val = $data->{$fld};
-	    $thawed{$fld} = Bb::Ultra::Util::thaw($val, $types->{$fld});
+	    $thawed{$fld} = Bb::Collaborate::Ultra::Util::thaw($val, $types->{$fld});
 	}
 	else {
 	    warn "ignoring field: $fld";

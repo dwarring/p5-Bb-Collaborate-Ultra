@@ -1,10 +1,10 @@
-package Bb::Ultra::User;
+package Bb::Collaborate::Ultra::User;
 use warnings; use strict;
 use Mouse;
-extends 'Bb::Ultra';
+extends 'Bb::Collaborate::Ultra';
 use Mouse::Util::TypeConstraints;
-coerce 'Bb::Ultra::User' => from 'HashRef' => via {
-    Bb::Ultra::User->new( $_ )
+coerce 'Bb::Collaborate::Ultra::User' => from 'HashRef' => via {
+    Bb::Collaborate::Ultra::User->new( $_ )
 };
 __PACKAGE__->resource('users');
 __PACKAGE__->load_schema(<DATA>);

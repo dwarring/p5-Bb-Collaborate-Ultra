@@ -1,4 +1,4 @@
-package Bb::Ultra::Util {
+package Bb::Collaborate::Ultra::Util {
 
     use Scalar::Util;
     use Date::Parse qw<str2time>;

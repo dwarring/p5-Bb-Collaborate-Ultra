@@ -4,10 +4,10 @@ use strict;
 use warnings;
 use inc::Module::Install;
 
-name           ('Bb-Ultra');
-module_name    ('Bb::Ultra');
+name           ('Bb-Collaborate-Ultra');
+module_name    ('Bb::Collaborate::Ultra');
 author         ('David Warring <david.warring@gmail.com>');
-all_from       ('lib/Bb/Ultra.pm');
+all_from       ('lib/Bb/Collaborate/Ultra.pm');
 license	       ('perl');
 
 requires(
