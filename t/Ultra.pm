@@ -18,7 +18,8 @@ sub test_connection {
 	    );
 	require Bb::Collaborate::Ultra::Connection;
 	my $connection = Bb::Collaborate::Ultra::Connection->new(\%params);
-	$connection->debug( $ENV{'BBC_ULTRA_DEBUG'} );
+	$connection->debug( 1 )
+	    if $ENV{'BBC_ULTRA_DEBUG'};
 	$params{connection} = $connection;
 	return %params
     }

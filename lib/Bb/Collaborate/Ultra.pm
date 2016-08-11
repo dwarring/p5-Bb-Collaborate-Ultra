@@ -2,7 +2,7 @@ use Class::Data::Inheritable;
 package Bb::Collaborate::Ultra;
 use warnings; use strict;
 use Mouse;
-use parent qw{Class::Data::Inheritable Class::Accessor};
+use parent qw{Class::Data::Inheritable};
 use JSON;
 use Bb::Collaborate::Ultra::Util;
 use Mouse::Util::TypeConstraints;
@@ -43,8 +43,9 @@ __PACKAGE__->mk_classdata('_query_params' => {
     offset => 'Int',
     fields => 'Str',
 });
-__PACKAGE__->mk_accessors('connection');
-__PACKAGE__->mk_accessors('parent');
+has '_connection' => ('is' => 'rw'); sub connection { shift->_connection(@_)}
+has '_parent' => ('is' => 'rw'); sub parent { shift->_parent(@_)}
+
 our %enums;
 
 sub query_params {
@@ -71,7 +72,7 @@ sub _property_types {
     my $types = $class->_types;
     unless ($types) {
 	my $meta = $class->meta;
-	my @atts = $meta->get_attribute_list;
+	my @atts = grep { $_ !~ /^_/ } ($meta->get_attribute_list);
 
 	$types = {
 	    map {$_ => $meta->get_attribute($_)->{type_constraint}} @atts
@@ -250,7 +251,7 @@ sub post {
 
 sub put {
     my $self = shift;
-    my $connection = $self->connection
+    my $connection = shift || $self->connection
 	|| die "no connected";
     my $update_data = $self->_pending_updates;
     my $path = $self->path;
@@ -261,6 +262,14 @@ sub put {
 	$obj->parent($self->parent);
     }
     $obj;
+}
+
+sub get {
+    my $class = shift;
+    my $connection = shift || die "no connection";
+    my $query_data = shift || die "no data";
+
+    $connection->get($class, $query_data, @_);
 }
 
 sub del {
@@ -306,7 +315,7 @@ sub find_or_create {
 	}
     }
     else {
-	$rec = $connection->post($class => $data);
+	$rec = $class->post($connection => $data);
     }
     $rec;
 }
@@ -325,7 +334,7 @@ BEGIN {
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2012-2015 David Warring.
+Copyright 2016 David Warring.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published

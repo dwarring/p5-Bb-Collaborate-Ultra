@@ -11,7 +11,6 @@ all_from       ('lib/Bb/Collaborate/Ultra.pm');
 license	       ('perl');
 
 requires(
-    'Class::Accessor'              => 0,
     'Class::Data::Inheritable'     => 0,
     'Clone'                        => 0,
     'Crypt::JWT'                   => 0,

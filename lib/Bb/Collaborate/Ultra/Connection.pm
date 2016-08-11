@@ -100,15 +100,15 @@ package Bb::Collaborate::Ultra::Connection {
     sub get {
 	my $self = shift;
 	my $class = shift;
-	my $data = shift || {};
+	my $query_data = shift || {};
 	my %opt = @_;
 
 	my $path = $opt{path};
-	$path //= $data->{id}
-	        ? $class->resource . '/' . $data->{id}
+	$path //= $query_data->{id}
+	        ? $class->resource . '/' . $query_data->{id}
 	        : $class->resource;
-	if (keys %$data) {
-	    $path .= $self->client->buildQuery($class->TO_JSON($data));
+	if (keys %$query_data) {
+	    $path .= $self->client->buildQuery($class->TO_JSON($query_data));
 	}
 	warn "GET: $path" if ref($self) && $self->debug;
 	$self->client->GET($path, {
@@ -124,12 +124,12 @@ package Bb::Collaborate::Ultra::Connection {
     sub del {
 	my $self = shift;
 	my $class = shift;
-	my $data = shift || {};
+	my $query_data = shift || {};
 
 	my $path = $class->resource;
-	die "path required for `deletion"
-	    unless $data->{id};
-	$path .= '/' . $data->{id};
+	die "id required for deletion"
+	    unless $query_data->{id};
+	$path .= '/' . $query_data->{id};
 	
 	warn "DELETE: $path" if $self->debug;
 	$self->client->DELETE($path, {

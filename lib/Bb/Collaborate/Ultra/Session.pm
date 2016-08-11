@@ -47,7 +47,7 @@ sub enrollments {
     my $data = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/enrollments';
-    $connection->get( 'Bb::Collaborate::Ultra::SessionEnrollment' => {}, path => $path, parent => $self);
+    Bb::Collaborate::Ultra::SessionEnrollment->get($connection => {}, path => $path, parent => $self);
 }
 
 1;
