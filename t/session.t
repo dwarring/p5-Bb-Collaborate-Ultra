@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 14;
+use Test::More tests => 15;
 use Test::Fatal;
 use Date::Parse;
 use lib '.';
@@ -8,7 +8,7 @@ use t::Ultra;
 SKIP: {
     my %t = t::Ultra->test_connection;
     my $connection = $t{connection};
-    skip $t{skip} || 'skipping live tests', 14
+    skip $t{skip} || 'skipping live tests', 15
 	unless $connection;
 
     $connection->connect;
@@ -72,6 +72,18 @@ SKIP: {
     });
 
     ok scalar @sessions <= 5 && scalar @sessions > 0, 'get sessions - with limits';
+
+    is exception {
+	require Bb::Collaborate::Ultra::Context;
+	my $context = Bb::Collaborate::Ultra::Context->find_or_create(
+	    $connection, {
+		extId => 'session.t',
+		name => 'sesson.t - test context',
+		label => 'session.t',
+	    });
+
+	$context->associate_session($session);
+    }, undef, '$context->associate_session(...) - lives';
 
     is exception { $session->del }, undef, 'session->del - lives';
 

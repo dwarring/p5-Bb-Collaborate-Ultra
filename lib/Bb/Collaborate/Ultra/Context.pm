@@ -8,7 +8,18 @@ __PACKAGE__->load_schema(<DATA>);
 __PACKAGE__->query_params(
     name => 'Str',
     extId => 'Str',
-);
+    );
+
+sub associate_session {
+    my $self = shift;
+    my $class = ref($self) || die 'usage: $obj->associate_session($session)';
+    my $session = shift;
+    my $session_id = $session->can('id')
+	? $session->id : $session;
+    my $path = $self->path . '/sessions';
+    $self->connection->post($class, { id => $session_id }, path => $path);
+}
+
 # downloaded from https://xx-csa.bbcollab.com/documentation
 1;
 __DATA__

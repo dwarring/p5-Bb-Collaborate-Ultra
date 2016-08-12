@@ -58,15 +58,6 @@ sub query_params {
     return $entity_class->_query_params;
 }
 
-=head2 property_types
-
-my $user_types = MyApp::Entity::User->property_types;
-my $type_info = Elive::Util::inspect_type($user_types->{role})
-
-Return a hashref of attribute data types.
-
-=cut
-
 sub _property_types {
     my $class = shift;
     my $types = $class->_types;
