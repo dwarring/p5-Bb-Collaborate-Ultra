@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 15;
+use Test::More tests => 18;
 use Test::Fatal;
 use Date::Parse;
 use lib '.';
@@ -8,7 +8,7 @@ use t::Ultra;
 SKIP: {
     my %t = t::Ultra->test_connection;
     my $connection = $t{connection};
-    skip $t{skip} || 'skipping live tests', 15
+    skip $t{skip} || 'skipping live tests', 18
 	unless $connection;
 
     $connection->connect;
@@ -32,7 +32,10 @@ SKIP: {
     is $session->endTime, $end, 'session end';
 
     $session->name('Test Session - Updated');
+    $session->endTime( $session->endTime + 60);
 
+    my @changed = $session->changed;
+    is_deeply \@changed, ['endTime', 'name'], 'changed fields';
     my $updates = $session->_pending_updates;
     is_deeply $updates, { 'id' => $session->id, name => 'Test Session - Updated', startTime => $session->startTime, endTime => $session->endTime, }, 'updateable data';
     is exception { $session->put }, undef, 'put updates - lives';
@@ -65,7 +68,7 @@ SKIP: {
     is scalar @enrollments, 1, 'user is now enrolled';
     my $enrollment = $enrollments[0];
 
-    is $enrollment->editingPermission, 'reader';
+    is $enrollment->editingPermission, 'reader', 'enrolment editingPermission';
 
     my @sessions = $connection->get( 'Bb::Collaborate::Ultra::Session' => {
 	limit => 5,
@@ -73,9 +76,11 @@ SKIP: {
 
     ok scalar @sessions <= 5 && scalar @sessions > 0, 'get sessions - with limits';
 
+    my $context;
+    my $session_id = $session->id;
     is exception {
 	require Bb::Collaborate::Ultra::Context;
-	my $context = Bb::Collaborate::Ultra::Context->find_or_create(
+	$context = Bb::Collaborate::Ultra::Context->find_or_create(
 	    $connection, {
 		extId => 'session.t',
 		name => 'sesson.t - test context',
@@ -84,6 +89,11 @@ SKIP: {
 
 	$context->associate_session($session);
     }, undef, '$context->associate_session(...) - lives';
+
+    is exception {
+	@sessions = Bb::Collaborate::Ultra::Session->get($connection, {contextId => $context->id, limit => 5}, )
+    }, undef, 'fetch session by context - lives';
+    ok scalar(@sessions), 'fetch session by context - results';
 
     is exception { $session->del }, undef, 'session->del - lives';
 

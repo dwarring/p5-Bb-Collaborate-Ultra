@@ -207,28 +207,38 @@ sub path {
     $id ? $path . '/' . $id : $path;
 }
 
-sub _pending_updates {
+sub changed {
     my $self = shift;
     my $data = $self->_raw_data;
+    my @changed;
+
     if (my $old_data = $self->_db_data) {
 	# include only key and changed data
 	for my $fld (sort keys %$data) {
 	    # ignore time-stamps
+	    next if $fld =~ /^(id|modified|created)$/;
 	    my $new_val = $data->{$fld};
 	    my $old_val = $old_data->{$fld};
-	    my $keep;
-	    unless ($fld eq 'modified' || $fld eq 'created') {
-		$keep = $fld eq 'id'
-		    ## seems we need to pass these!?
-		    || $fld eq 'startTime' || $fld eq 'endTime'
-		    || !defined($old_val)
+	    push @changed, $fld
+		    if !defined($old_val)
 		    || !Compare($old_val, $new_val);
-	    }
-	    delete $data->{$fld}
-		unless $keep;
 	}
     }
-    $data;
+    @changed;
+}
+
+sub _pending_updates {
+    my $self = shift;
+    my $data = $self->_raw_data;
+    my %pending;
+    @pending{ $self->changed } = undef;
+    # pass the primary key
+    $pending{id} = undef; 
+    ## seems we need to pass these!?
+    $pending{startTime} = undef if $data->{startTime};
+    $pending{endTime} = undef if $data->{endTime};
+    my %updates = map { $_ => $data->{$_} } (sort keys %pending);
+    \%updates;
 }
 
 sub post {

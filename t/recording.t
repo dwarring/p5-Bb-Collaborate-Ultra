@@ -16,7 +16,7 @@ SKIP: {
 
     my @recordings = $connection->get( 'Bb::Collaborate::Ultra::Recording' => {
 	limit => 5,
-	startTime => time() - 7 * 60 * 60 * 24,
+	startTime => time() - 31 * 60 * 60 * 24,
     });
 
     skip "no recordings found", 2
@@ -25,6 +25,6 @@ SKIP: {
 
     my $recording = $recordings[0];
     isa_ok $recording, 'Bb::Collaborate::Ultra::Recording';
-    ok $recording->sessionStartTime;
+    ok $recording->sessionStartTime, 'got startTime';
 
 }
