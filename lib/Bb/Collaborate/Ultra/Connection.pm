@@ -27,12 +27,19 @@ package Bb::Collaborate::Ultra::Connection {
     sub response {
 	my $self = shift;
 	my $client = shift || $self->client;
-	warn "response: ". $client->responseContent
-	    if $self->debug;
+	my $response_content = $client->responseContent;
 	my $response_code = $client->responseCode;
+	warn "response $response_code: ". $response_content
+	    if $self->debug;
+	my $response_data;
+	if ($response_content) {
+	    $response_data = from_json( $response_content);
+	    die "[$response_code] $response_data->{errorKey} : $response_data->{errorMessage}"
+		if $response_data->{errorKey};
+	}
 	die "bad HTTP response code: $response_code"
 	    unless $response_code == 200;
-	$client->responseContent;
+	$response_data;
     }
 
     sub connect {
@@ -115,7 +122,7 @@ package Bb::Collaborate::Ultra::Connection {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
         },);
-	my $msg = from_json $self->response;
+	my $msg = $self->response;
 	$msg->{results}
 	    ? map { $class->construct($_, connection => $self, parent => $opt{parent}) } @{ $msg->{results} }
 	    : $class->construct($msg, connection => $self, parent => $opt{parent});

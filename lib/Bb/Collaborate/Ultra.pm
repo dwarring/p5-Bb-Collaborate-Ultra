@@ -110,10 +110,7 @@ sub TO_JSON {
 
 sub thaw {
     my $self = shift;
-    my $payload = shift;
-    my $data = ref $payload
-	? $payload
-	: from_json($payload);
+    my $data = shift;
     my $types = $self->_property_types;
     my %thawed;
 

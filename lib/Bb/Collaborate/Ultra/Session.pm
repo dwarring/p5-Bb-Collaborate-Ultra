@@ -38,7 +38,7 @@ sub launch {
     my $connection = shift || $self->connection;
     my $path = $self->path.'/url';
     my $response = $connection->post( 'Bb::Collaborate::Ultra::LaunchContext' => $data, path => $path);
-    my $msg = from_json $response;
+    my $msg = $response;
     $msg->{url};
 }
 
