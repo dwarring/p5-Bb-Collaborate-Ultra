@@ -5,36 +5,34 @@ package Bb::Collaborate::Ultra::Connection {
     use JSON;
     use Mouse;
     use REST::Client;
+    use Try::Tiny;
     use Bb::Collaborate::Ultra::Connection::Auth;
 
     has 'issuer' => (is => 'rw', isa => 'Str', required => 1);
     has 'secret' => (is => 'rw', isa => 'Str', required => 1);
     has 'host'   => (is => 'rw', isa => 'Str', required => 1);
 
-    has 'client' => (is => 'rw', isa => 'REST::Client' );
+    has '_client' => (is => 'rw', isa => 'REST::Client' );
     has 'auth'  =>  (is => 'rw', isa => 'Bb::Collaborate::Ultra::Connection::Auth' ); 
-    has 'auth_start'  =>  (is => 'rw', isa => 'Int' );
     has 'debug'  =>  (is => 'rw', isa => 'Int' );
-
-    sub auth_end {
-	my $self = shift;
-	my $auth = $self->auth
-	    or return;
-
-	$self->auth_start + $auth->expires_in;
-    }
 
     sub response {
 	my $self = shift;
 	my $client = shift || $self->client;
 	my $response_content = $client->responseContent;
 	my $response_code = $client->responseCode;
-	warn "response $response_code: ". $response_content
+	warn "RESPONSE: [$response_code] ". $response_content. "\n\n"
 	    if $self->debug;
 	my $response_data;
 	if ($response_content) {
-	    $response_data = from_json( $response_content);
-	    die "[$response_code] $response_data->{errorKey} : $response_data->{errorMessage}"
+	    try {
+		$response_data = from_json( $response_content);
+	    }
+	    catch {
+		die "[$response_code] $response_content";
+	    };
+
+	    die "[$response_code] $response_data->{errorKey} : $response_data->{errorMessage}\n"
 		if $response_data->{errorKey};
 	}
 	die "bad HTTP response code: $response_code"
@@ -42,16 +40,25 @@ package Bb::Collaborate::Ultra::Connection {
 	$response_data;
     }
 
-    sub connect {
-	my $self = shift;
-	
-	use constant JWS_RSA_256 => 'HS256';
-	use constant JWT_EXPIRY => 4 * 60; # 4 minutes
+    use constant JWS_RSA_256 => 'HS256';
+    use constant JWT_EXPIRY => 4 * 60; # 4 minutes
 
-	my $client = $self->client( REST::Client->new );
-	$client->setHost( $self->host);
-  
-	my $expiry = time()  +  JWT_EXPIRY;
+    sub client {
+	my $self = shift;
+	my $client = $self->_client;
+	unless ($client) {
+	    $client= REST::Client->new;
+	    $client->setHost( $self->host);
+	    $self->_client($client);
+	}
+	$client;
+    }
+
+    sub renew_lease {
+	my $self = shift;
+	my $expiry = shift || time()  +  JWT_EXPIRY;
+	my $class = 'Bb::Collaborate::Ultra::Connection::Auth';
+	my $client = $self->client;
 
 	my $claims = {
 	    iss => $self->issuer,
@@ -65,11 +72,23 @@ package Bb::Collaborate::Ultra::Connection {
 	    grant_type => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
 	    assertion => $jwt,
 	});
-	my $class = 'Bb::Collaborate::Ultra::Connection::Auth';
-	$self->auth_start( time() );
-	$client->POST($class->path . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
+
+	my $path = $class->path;
+	warn "POST: $path$query\n" if $self->debug;
+	$client->POST($path . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
 	my $auth_msg = $self->response($client);
-	$self->auth( $class->construct($auth_msg, connection => $self) );
+	my $auth = $class->construct($auth_msg, connection => $self);
+	$auth->_leased( time() );
+	$self->auth( $auth );
+    }
+
+    sub connect {
+	my $self = shift;
+	
+	my $client = $self->client;
+  
+	$self->renew_lease
+	    unless ($self->auth);
     }
 
     sub post {
@@ -80,8 +99,20 @@ package Bb::Collaborate::Ultra::Connection {
 	my $json = $class->freeze($data);
 	my $path = $opt{path} // $class->path
             or die "no POST path";
-	warn "POST: $path    $json" if $self->debug;
+	warn "POST: $path    $json\n" if $self->debug;
 	$self->client->POST($path, $json, {
+	    'Content-Type' => 'application/json',
+	    'Authorization' => 'Bearer ' . $self->auth->access_token,
+        },);
+	$self->response;
+    }
+
+    sub PUT {
+	my $self = shift;
+	my $path = shift;
+	my $json = shift;
+	warn "PUT: $path   $json\n" if $self->debug;
+	$self->client->PUT($path, $json, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
         },);
@@ -96,11 +127,17 @@ package Bb::Collaborate::Ultra::Connection {
 	my $json = $class->freeze($data);
 	my $path = $opt{path} // $class->path
             or die "no PUT path";
-	warn "PUT: $path   $json" if $self->debug;
-	$self->client->PUT($path, $json, {
+	$self->PUT($path, $json);
+    }
+
+    sub GET {
+	my $self = shift;
+	my $path = shift;
+	warn "GET: $path\n" if $self->debug;
+	$self->client->GET($path, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,
-        },);
+	},);
 	$self->response;
     }
 
@@ -117,12 +154,7 @@ package Bb::Collaborate::Ultra::Connection {
 	if (keys %$query_data) {
 	    $path .= $self->client->buildQuery($class->TO_JSON($query_data));
 	}
-	warn "GET: $path" if ref($self) && $self->debug;
-	$self->client->GET($path, {
-	    'Content-Type' => 'application/json',
-	    'Authorization' => 'Bearer ' . $self->auth->access_token,
-        },);
-	my $msg = $self->response;
+	my $msg = $self->GET($path);
 	$msg->{results}
 	    ? map { $class->construct($_, connection => $self, parent => $opt{parent}) } @{ $msg->{results} }
 	    : $class->construct($msg, connection => $self, parent => $opt{parent});
@@ -138,7 +170,7 @@ package Bb::Collaborate::Ultra::Connection {
 	    unless $query_data->{id};
 	$path .= '/' . $query_data->{id};
 	
-	warn "DELETE: $path" if $self->debug;
+	warn "DELETE: $path\n" if $self->debug;
 	$self->client->DELETE($path, {
 	    'Content-Type' => 'application/json',
 	    'Authorization' => 'Bearer ' . $self->auth->access_token,

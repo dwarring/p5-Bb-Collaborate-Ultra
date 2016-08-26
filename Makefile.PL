@@ -22,6 +22,7 @@ requires(
     'parent'                       => 0,
     'REST::Client'                 => 0,
     'Scalar::Util'                 => 0,
+    'Try::Tiny'                    => 0,
     );
 
 recommends(

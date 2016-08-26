@@ -10,7 +10,16 @@ __PACKAGE__->query_params(
     contextId => 'Str',
     startTime => 'Date',
     endTime => 'Date'
-);
+    );
+
+sub url {
+    my $self = shift;
+    my $connection = shift || $self->connection;
+    my $path = $self->path.'/url';
+    my $response = $connection->GET($path);
+    $response->{url};
+}
+
 # downloaded from https://xx-csa.bbcollab.com/documentation
 1;
 __DATA__

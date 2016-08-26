@@ -19,16 +19,15 @@ SKIP: {
 
     is exception { $connection->connect; }, undef, "connection lives";
 
-    my $auth_start = $connection->auth_start;
-    ok $auth_start, 'auth_start';
+    my $auth = $connection->auth;
+    isa_ok $auth, 'Bb::Collaborate::Ultra::Connection::Auth', 'auth';
+    my $leased = $auth->_leased;
+    ok $leased, '_leased';
 
     my $t = time();
-    ok $auth_start > $t - 60 && $auth_start <= $t + 60, 'auth_start'
-	or diag "time:$t auth_start:$auth_start";
+    ok $leased > $t - 60 && $leased <= $t + 60, '_leased'
+	or diag "time:$t _leased:$leased";
 
-    my $auth = $connection->auth;
-
-    isa_ok $auth, 'Bb::Collaborate::Ultra::Connection::Auth', 'auth';
     ok $auth->access_token, 'access_token';
     my $expires = $auth->expires_in;
     ok $expires, 'expires_in';
