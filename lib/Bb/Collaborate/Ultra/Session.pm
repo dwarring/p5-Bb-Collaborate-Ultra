@@ -18,6 +18,16 @@ coerce 'ArrayOfOccurrences',
 has 'occurrences' => (isa => 'ArrayOfOccurrences', is => 'rw', coerce => 1);
 has 'recurrenceRule' => (isa => 'Bb::Collaborate::Ultra::Session::RecurrenceRule', is => 'rw', coerce => 1);
 
+sub thaw {
+    my $self = shift;
+    my $data = shift;
+    my $thawed = $self->SUPER::thaw($data, @_);
+    my $occurrences = $data->{occurrences};
+    $thawed->{occurrences} = [ map { Bb::Collaborate::Ultra::Session::Occurrence->thaw($_) } (@$occurrences) ]
+	if $occurrences;
+    $thawed;
+}
+
 __PACKAGE__->resource('sessions');
 __PACKAGE__->load_schema(<DATA>);
 __PACKAGE__->query_params(

@@ -16,7 +16,7 @@ requires(
     'Crypt::JWT'                   => 0,
     'Date::Parse'                  => 0,
     'Data::Compare'                => 0,
-    'JSON'                         => 0,
+    'JSON'                         => '2.90',
     'Mouse'                        => 0,
     'Mouse::Util::TypeConstraints' => 0,
     'parent'                       => 0,

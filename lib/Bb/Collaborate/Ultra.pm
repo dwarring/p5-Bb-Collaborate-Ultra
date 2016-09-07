@@ -129,8 +129,8 @@ sub thaw {
 sub construct {
     my $class = shift;
     my $payload = shift;
-    my $data = $class->thaw($payload);
     my %opt = @_;
+    my $data = $class->thaw($payload);
     my $obj = $class->new($data);
     for ($opt{connection}) {
 	$obj->connection($_) if $_

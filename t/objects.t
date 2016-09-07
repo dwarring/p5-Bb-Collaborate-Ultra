@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 27;
+use Test::More tests => 31;
 use Test::Fatal;
 use JSON;
 # ----------------------------------------------------------------
@@ -17,6 +17,7 @@ my %session_data = (
     id => 'abc123456',
     startTime => $now,
     name => 'test session object',
+    allowGuest => 1,
     occurrences => [
 	{ id => 'xyz248', startTime => $now, endTime => $now + 60 },
     ],
@@ -31,6 +32,13 @@ is exception { $session = Bb::Collaborate::Ultra::Session->new(\%session_data)},
 
 isa_ok $session, 'Bb::Collaborate::Ultra::Session', 'session';
 is $session->id, 'abc123456', 'session->id';
+
+my $frozen;
+my $thawed;
+is exception { $frozen = from_json($session->freeze) }, undef, '$session->freeze - lives';
+is exception { $thawed = $session->thaw($frozen) }, undef, '$session->thaw - lives';
+is_deeply $thawed, \%session_data, '$session data freeze/thaw round-trip';
+is exception { Bb::Collaborate::Ultra::Session->new($thawed) }, undef, '$session recreate from roundtrip data';
 
 isnt exception { $session->guestRole('lacky') }, undef, 'enum - invalid';
 isnt  $session->guestRole, 'lacky', 'enum - invalid';
@@ -56,7 +64,6 @@ is exception { $user = Bb::Collaborate::Ultra::User->new(\%user_data)}, undef, '
 isa_ok $user, 'Bb::Collaborate::Ultra::User', 'user';
 is $user->id, 'xyz345', 'user->id';
 is $user->userName, 'Alice', 'user->userName';
-my $thawed;
 is exception { $thawed = from_json $user->freeze, }, undef, 'user freeze/thaw round trip - lives';
 is_deeply $thawed, \%user_data, 'user freeze/thaw round trip - data';
 
