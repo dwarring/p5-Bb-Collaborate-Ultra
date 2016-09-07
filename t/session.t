@@ -96,5 +96,4 @@ SKIP: {
     ok scalar(@sessions), 'fetch session by context - results';
 
     is exception { $session->del }, undef, 'session->del - lives';
-
 }
