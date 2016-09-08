@@ -53,13 +53,14 @@ SKIP: {
 	lastName => 'Warring',
     });
 
+    my $launch_context =  Bb::Collaborate::Ultra::LaunchContext->new({ launchingRole => 'moderator',
+	 editingPermission => 'writer',
+	 user => $user,
+	 });
+
     my $url;
     is exception {
-	$url = $session->launch({
-	    launchingRole => 'moderator',
-	    editingPermission => 'reader',
-	    user => $user,
-	 });
+	$url = $launch_context->join_session($session);
     }, undef, 'session launch_context - lives';
 
     ok $url, "got launch_context url";
@@ -68,7 +69,7 @@ SKIP: {
     is scalar @enrollments, 1, 'user is now enrolled';
     my $enrollment = $enrollments[0];
 
-    is $enrollment->editingPermission, 'reader', 'enrolment editingPermission';
+    is $enrollment->editingPermission, 'writer', 'enrolment editingPermission';
 
     my @sessions = $connection->get( 'Bb::Collaborate::Ultra::Session' => {
 	limit => 5,

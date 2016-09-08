@@ -4,6 +4,19 @@ use Mouse;
 extends 'Bb::Collaborate::Ultra';
 use Bb::Collaborate::Ultra::User;
 has 'user' => (isa => 'Bb::Collaborate::Ultra::User', is => 'rw', coerce => 1);
+
+sub join_session {
+    my $self = shift;
+    my $session = shift;
+    my $connection = shift || $session->connection
+	or die "not connected";
+    my $path = $session->path.'/url';
+    my $data = $self->_raw_data;
+    my $response = $connection->post( ref($self) => $data, path => $path);
+    my $msg = $response;
+    $msg->{url};
+}
+
 __PACKAGE__->load_schema(<DATA>);
 1;
 # downloaded from https://xx-csa.bbcollab.com/documentation

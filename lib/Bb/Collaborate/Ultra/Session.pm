@@ -42,16 +42,6 @@ __PACKAGE__->query_params(
 use Bb::Collaborate::Ultra::LaunchContext;
 use Bb::Collaborate::Ultra::SessionEnrollment;
 
-sub launch {
-    my $self = shift;
-    my $data = shift;
-    my $connection = shift || $self->connection;
-    my $path = $self->path.'/url';
-    my $response = $connection->post( 'Bb::Collaborate::Ultra::LaunchContext' => $data, path => $path);
-    my $msg = $response;
-    $msg->{url};
-}
-
 sub enrollments {
     my $self = shift;
     my $data = shift;
