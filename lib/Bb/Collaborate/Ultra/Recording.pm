@@ -16,7 +16,7 @@ sub url {
     my $self = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/url';
-    my $response = $connection->GET($path);
+    my $response = $connection->get($path);
     $response->{url};
 }
 

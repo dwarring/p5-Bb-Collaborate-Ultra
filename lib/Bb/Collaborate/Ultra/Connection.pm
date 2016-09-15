@@ -16,7 +16,7 @@ has '_client' => (is => 'rw', isa => 'REST::Client' );
 has 'auth'  =>  (is => 'rw', isa => 'Bb::Collaborate::Ultra::Connection::Auth' ); 
 has 'debug'  =>  (is => 'rw', isa => 'Int' );
 
-sub response {
+sub _response {
     my $self = shift;
     my $client = shift || $self->client;
     my $response_content = $client->responseContent;
@@ -76,7 +76,7 @@ sub renew_lease {
     my $path = $class->path;
     warn "POST: $path$query\n" if $self->debug;
     $client->POST($path . $query, '', { 'Content-Type' => 'application/x-www-form-urlencoded' });
-    my $auth_msg = $self->response($client);
+    my $auth_msg = $self->_response($client);
     my $auth = $class->construct($auth_msg, connection => $self);
     $auth->_leased( time() );
     $self->auth( $auth );
@@ -93,21 +93,17 @@ sub connect {
 
 sub post {
     my $self = shift;
-    my $class = shift;
-    my $data = shift;
-    my %opt = @_;
-    my $json = $class->freeze($data);
-    my $path = $opt{path} // $class->path
-	or die "no POST path";
+    my $path = shift;
+    my $json = shift;
     warn "POST: $path    $json\n" if $self->debug;
     $self->client->POST($path, $json, {
 	'Content-Type' => 'application/json',
 	'Authorization' => 'Bearer ' . $self->auth->access_token,
     },);
-    $self->response;
+    $self->_response;
 }
 
-sub PUT {
+sub put {
     my $self = shift;
     my $path = shift;
     my $json = shift;
@@ -116,21 +112,10 @@ sub PUT {
 	'Content-Type' => 'application/json',
 	'Authorization' => 'Bearer ' . $self->auth->access_token,
     },);
-    $self->response;
+    $self->_response;
 }
 
-sub put {
-    my $self = shift;
-    my $class = shift;
-    my $data = shift;
-    my %opt = @_;
-    my $json = $class->freeze($data);
-    my $path = $opt{path} // $class->path
-	or die "no PUT path";
-    $self->PUT($path, $json);
-}
-
-sub GET {
+sub get {
     my $self = shift;
     my $path = shift;
     warn "GET: $path\n" if $self->debug;
@@ -138,34 +123,14 @@ sub GET {
 	'Content-Type' => 'application/json',
 	'Authorization' => 'Bearer ' . $self->auth->access_token,
     },);
-    $self->response;
-}
-
-sub get {
-    my $self = shift;
-    my $class = shift;
-    my $query_data = shift || {};
-    my %opt = @_;
-
-    my $path = $opt{path};
-    $path //= $query_data->{id}
-	    ? $class->resource . '/' . $query_data->{id}
-	    : $class->resource;
-    if (keys %$query_data) {
-	$path .= $self->client->buildQuery($class->TO_JSON($query_data));
-    }
-    my $msg = $self->GET($path);
-    $msg->{results}
-	? map { $class->construct($_, connection => $self, parent => $opt{parent}) } @{ $msg->{results} }
-	: $class->construct($msg, connection => $self, parent => $opt{parent});
+    $self->_response;
 }
 
 sub del {
     my $self = shift;
-    my $class = shift;
+    my $path = shift;
     my $query_data = shift || {};
 
-    my $path = $class->resource;
     die "id required for deletion"
 	unless $query_data->{id};
     $path .= '/' . $query_data->{id};
@@ -175,8 +140,7 @@ sub del {
 	'Content-Type' => 'application/json',
 	'Authorization' => 'Bearer ' . $self->auth->access_token,
     },);
-    my $msg = $self->response;
-
+    $self->_response;
 }
 
 1;

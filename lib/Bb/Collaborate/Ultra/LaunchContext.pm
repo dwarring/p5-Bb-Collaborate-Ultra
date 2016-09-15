@@ -10,9 +10,9 @@ sub join_session {
     my $session = shift;
     my $connection = shift || $session->connection
 	or die "not connected";
-    my $path = $session->path.'/url';
-    my $data = $self->_raw_data;
-    my $response = $connection->post( ref($self) => $data, path => $path);
+    my $session_path = $session->path.'/url';
+    my $data = $self->freeze;
+    my $response = $connection->post($session_path, $data);
     my $msg = $response;
     $msg->{url};
 }

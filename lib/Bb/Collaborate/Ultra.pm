@@ -242,8 +242,12 @@ sub post {
     my $class = shift;
     my $connection = shift || die "no connection";
     my $data = shift || die "no data";
+    my %opt = @_;
+    my $json = $class->freeze($data);
+    my $path = $opt{path} // $class->path
+	or die "no POST path";
 
-    my $msg = $connection->post($class, $data, @_);
+    my $msg = $connection->post($path, $json, @_);
     $class->construct($msg, connection => $connection);
 }
 
@@ -251,9 +255,11 @@ sub put {
     my $self = shift;
     my $connection = shift || $self->connection
 	|| die "no connected";
-    my $update_data = $self->_pending_updates;
+    my $update_data = shift || $self->_pending_updates;
+    my $class = ref($self) || $self;
     my $path = $self->path;
-    my $msg = $connection->put(ref($self), $update_data, path => $path, @_);
+    my $json = $class->freeze($update_data);
+    my $msg = $connection->put($path, $json);
     my $obj = $self->construct($msg, connection => $connection);
     if ($self) {
 	$self->_db_data( $obj->_db_data );
@@ -263,11 +269,23 @@ sub put {
 }
 
 sub get {
-    my $class = shift;
+    my $self = shift;
     my $connection = shift || die "no connection";
     my $query_data = shift || die "no data";
+    my %opt = @_;
+    my $class = ref($self) || $self;
 
-    $connection->get($class, $query_data, @_);
+    my $path = $opt{path};
+    $path //= $query_data->{id}
+	    ? $class->resource . '/' . $query_data->{id}
+	    : $class->resource;
+    if (keys %$query_data) {
+	$path .= $connection->client->buildQuery($class->TO_JSON($query_data));
+    }
+    my $msg = $connection->get($path);
+    $msg->{results}
+	? map { $class->construct($_, connection => $connection, parent => $opt{parent}) } @{ $msg->{results} }
+	: $class->construct($msg, connection => $connection, parent => $opt{parent});
 }
 
 sub del {
@@ -275,9 +293,9 @@ sub del {
     my $connection = shift
 	|| $self->connection
 	|| die 'Not connected';
-    my $class = ref $self;
-    my $data = {id => $self->id};
-    $connection->del($class, $data);
+    my $data = shift // {id => $self->id};
+    my $path = $self->resource;
+    $connection->del($path, $data);
 }
 
 sub find_or_create {
@@ -302,7 +320,7 @@ sub find_or_create {
 	    warn "$class: ignoring unknown field: $fld";
 	}
     }
-    my @recs = $connection->get($class => \%query);
+    my @recs = $class->get($connection, \%query);
     my $rec;
     if (@recs) {
 	warn "$class: ambiguous find_or_create query: @{[ keys %query ]}\n"

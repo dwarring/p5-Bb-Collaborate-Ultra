@@ -38,13 +38,11 @@ SKIP: {
     my $start = $t + 300;
     my $end = $start + 1800;
 
-    my $msg = $connection->post(
-	'Bb::Collaborate::Ultra::Session' => {
-	    name => 'Test Session',
-	    startTime => $start,
-	    endTime   => $end,
-	});
-    my $session = Bb::Collaborate::Ultra::Session->construct($msg, connection => $connection);
+    my $session = Bb::Collaborate::Ultra::Session->post($connection, {
+	name => 'Test Session',
+	startTime => $start,
+	endTime   => $end,
+    });
     my $session_id = $session->id;
     ok $session_id, 'got session_id';
     ok $session->created, "session creation";
@@ -53,18 +51,16 @@ SKIP: {
 
     $session = undef;
 
-    $session = $connection->get('Bb::Collaborate::Ultra::Session' => {
-	id => $session_id,
-    });
+    $session = Bb::Collaborate::Ultra::Session->get(
+    	     $connection, { id => $session_id, }
+	);
 
     ok $session->created, "session creation";
     ok looks_like_number $session->created, "created data-type"
 	or diag "created: " .  $session->created;
 
     is exception {
-	$connection->del('Bb::Collaborate::Ultra::Session' => {
-	    id => $session->id,
-	});
+	$session->del;
     }, undef, "session deletion lives";
 }
 

@@ -61,7 +61,7 @@ SKIP: {
     my $url;
     is exception {
 	$url = $launch_context->join_session($session);
-    }, undef, 'session launch_context - lives';
+    }, undef, 'launch context join session - lives';
 
     ok $url, "got launch_context url";
 
@@ -71,7 +71,7 @@ SKIP: {
 
     is $enrollment->editingPermission, 'writer', 'enrolment editingPermission';
 
-    my @sessions = $connection->get( 'Bb::Collaborate::Ultra::Session' => {
+    my @sessions = Bb::Collaborate::Ultra::Session->get($connection, {
 	limit => 5,
     });
 

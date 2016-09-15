@@ -12,12 +12,14 @@ __PACKAGE__->query_params(
 
 sub associate_session {
     my $self = shift;
-    my $class = ref($self) || die 'usage: $obj->associate_session($session)';
     my $session = shift;
-    my $session_id = $session->can('id')
-	? $session->id : $session;
+
+    die 'usage: $context->associate_session($session)'
+	unless ref($self) && ref($session);
+    my $session_id = $session->id;
     my $path = $self->path . '/sessions';
-    $self->connection->post($class, { id => $session_id }, path => $path);
+    my $json = $session->freeze( { id => $session_id } );
+    $self->connection->post($path, $json );
 }
 
 # downloaded from https://xx-csa.bbcollab.com/documentation

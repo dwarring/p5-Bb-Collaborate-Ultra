@@ -19,7 +19,7 @@ SKIP: {
     my $context_name = "context.t: ".$ext_id;
 
     my $context;
-    my @contexts = $connection->get( 'Bb::Collaborate::Ultra::Context' => {
+    my @contexts = Bb::Collaborate::Ultra::Context->get( $connection, {
 	extId => $ext_id,
     });
 

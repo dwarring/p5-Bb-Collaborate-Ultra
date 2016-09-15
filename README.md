@@ -38,9 +38,10 @@ use Bb::Collaborate::Ultra::LaunchContext;
     });
 
     # register the user. obtain a join URL
-    my $launch_context =  Bb::Collaborate::Ultra::LaunchContext->new({ launchingRole => 'moderator',
-            editingPermission => 'writer',
-            user => $user,
+    my $launch_context =  Bb::Collaborate::Ultra::LaunchContext->new({
+          launchingRole => 'moderator',
+          editingPermission => 'writer',
+          user => $user,
          });
      my $url = $launch_context->join_session($session);
 

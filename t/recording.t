@@ -15,7 +15,7 @@ SKIP: {
     $connection->connect;
     my @recordings;
     is exception {
-	@recordings = $connection->get( 'Bb::Collaborate::Ultra::Recording' => {
+	@recordings = Bb::Collaborate::Ultra::Recording->get($connection, {
 	    limit => 5,
 	    startTime => time() - 31 * 60 * 60 * 24,
 	  });
