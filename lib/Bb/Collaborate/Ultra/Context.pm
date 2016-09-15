@@ -15,7 +15,7 @@ sub associate_session {
     my $session = shift;
 
     die 'usage: $context->associate_session($session)'
-	unless ref($self) && ref($session);
+	unless ref($self) && $session;
     my $session_id = $session->id;
     my $path = $self->path . '/sessions';
     my $json = $session->freeze( { id => $session_id } );

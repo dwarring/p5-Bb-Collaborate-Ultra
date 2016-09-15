@@ -15,11 +15,11 @@ Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classroms
 
 =head1 VERSION
 
-Version 0.10
+Version 0.00.00_2
 
 =cut
 
-our $VERSION = '0.00.00_1';
+our $VERSION = '0.00.00_2';
 
 =head1 DESCRIPTION
 
