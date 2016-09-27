@@ -1,7 +1,6 @@
 package Bb::Collaborate::Ultra::Session;
 use warnings; use strict;
 use Mouse;
-use JSON;
 extends 'Bb::Collaborate::Ultra';
 
 use Bb::Collaborate::Ultra::Session::Occurrence;
@@ -17,6 +16,18 @@ coerce 'ArrayOfOccurrences',
 
 has 'occurrences' => (isa => 'ArrayOfOccurrences', is => 'rw', coerce => 1);
 has 'recurrenceRule' => (isa => 'Bb::Collaborate::Ultra::Session::RecurrenceRule', is => 'rw', coerce => 1);
+
+=head1 NAME
+
+Bb::Collaborate::Ultra::Session
+
+=head1 DESCRIPTION
+
+This class is used to manage Sessions (Virtual Classrooms).
+
+=head2 METHODS
+
+=cut
 
 sub _thaw {
     my $self = shift;
@@ -41,6 +52,12 @@ __PACKAGE__->query_params(
 
 use Bb::Collaborate::Ultra::LaunchContext;
 use Bb::Collaborate::Ultra::SessionEnrollment;
+
+=head2 enrollments
+
+Return a list of users who are enrolled for the session.
+
+=cut
 
 sub enrollments {
     my $self = shift;

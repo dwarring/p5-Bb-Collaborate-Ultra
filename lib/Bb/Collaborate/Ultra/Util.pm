@@ -10,7 +10,7 @@ package Bb::Collaborate::Ultra::Util;
 
 use Scalar::Util;
 use Date::Parse qw<str2time>;
-sub freeze {
+sub _freeze {
     my ($val, $type) = @_;
 
     for ($val) {
@@ -68,7 +68,7 @@ sub freeze {
 # thawing of elementry datatypes
 #
 
-sub thaw {
+sub _thaw {
     my ($val, $type) = @_;
 
     return $val if $type =~ m{Ref}i

@@ -108,7 +108,7 @@ sub put {
 
 =head2 get
 
-Fetches one or more objects from th server.
+Fetches one or more objects from the server.
 
 =cut
 
@@ -355,7 +355,7 @@ sub TO_JSON {
 	};
 	    
 	my $val = $data->{$fld};
-	$frozen{$fld} = Bb::Collaborate::Ultra::Util::freeze($val, $type);
+	$frozen{$fld} = Bb::Collaborate::Ultra::Util::_freeze($val, $type);
     }
     \%frozen;
 }
@@ -375,7 +375,7 @@ sub _thaw {
     for my $fld (keys %$data) {
 	if (exists $types->{$fld}) {
 	    my $val = $data->{$fld};
-	    $thawed{$fld} = Bb::Collaborate::Ultra::Util::thaw($val, $types->{$fld});
+	    $thawed{$fld} = Bb::Collaborate::Ultra::Util::_thaw($val, $types->{$fld});
 	}
 	else {
 	    warn "ignoring field: $fld";

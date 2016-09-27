@@ -7,7 +7,7 @@ __PACKAGE__->load_schema(<DATA>);
 
 =head1 NAME
 
-Bb::Collaborate::Ultra::SessionEnrollment - Session enrollment
+Bb::Collaborate::Ultra::SessionEnrollment - Session enrollments
 
 =cut
 

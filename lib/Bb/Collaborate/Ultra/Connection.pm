@@ -136,14 +136,14 @@ sub renew_lease {
 
 =head2 POST
 
-This is a low level post of formatted JSON data.
+Low level method. Post JSON data formatted data.
 
     my $response = $connection->POST('sessions', '{"startTime":"2016-09-27T05:10:04Z","endTime":"2016-09-27T05:25:04Z","name":"Test Session"}');
-    my $session = Bb::Collaborate::Ultra::Session->construct($response, connection => $connectioon);
+    my $session = Bb::Collaborate::Ultra::Session->construct($response, connection => $connection);
 
-You usually shouldn't need to call this routine directly. For example, the following is preferred for session creation:
+Generally, you should be using higher level class-specific methods:
 
-    my $session = Bb::Collaborate::Ultra::Session->post({startTime => time(), endTime => time() + 900, name => 
+    my $session = Bb::Collaborate::Ultra::Session->post({startTime => time(), endTime => time() + 900, name => 'Test Session'});
 
 =cut
 
@@ -159,6 +159,15 @@ sub POST {
     $self->_response;
 }
 
+=head2 PUT
+
+Low level method. Put JSON data formatted data.
+
+    my $session_id = $session->id;
+    my $response = $connection->PUT('sessions/'$session_id, '{"name":"Test Session - Updated"}');
+
+=cut
+
 sub PUT {
     my $self = shift;
     my $path = shift;
@@ -171,6 +180,16 @@ sub PUT {
     $self->_response;
 }
 
+=head2 GET
+
+Low level method. Get by path
+
+    my $session_id = $session->id;
+    my $response = $connection->GET('sessions/'$session_id);
+    $session = Bb::Collaborate::Ultra::Session->construct($response, connection => $connection);
+
+=cut
+
 sub GET {
     my $self = shift;
     my $path = shift;
@@ -181,6 +200,15 @@ sub GET {
     },);
     $self->_response;
 }
+
+=head2 DEL
+
+Low level method. Delete by path
+
+    my $session_id = $session->id;
+    my $response = $connection->DEL('sessions/'$session_id);
+
+=cut
 
 sub DEL {
     my $self = shift;

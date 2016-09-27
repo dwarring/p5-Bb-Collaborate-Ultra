@@ -3,6 +3,16 @@ use warnings; use strict;
 use Mouse;
 extends 'Bb::Collaborate::Ultra';
 
+=head1 NAME
+
+Bb::Collaborate::Ultra::User - Launch Context User
+
+=head1 DESCRIPTION
+
+See also L<Bb::Collaborate::Ultra::LaunchContext>.
+
+=cut
+
 has 'ltiLaunchDetails' => (isa => 'Any', is => 'rw');
 
 use Mouse::Util::TypeConstraints;

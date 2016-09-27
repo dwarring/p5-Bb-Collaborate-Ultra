@@ -5,6 +5,41 @@ extends 'Bb::Collaborate::Ultra';
 use Bb::Collaborate::Ultra::User;
 has 'user' => (isa => 'Bb::Collaborate::Ultra::User', is => 'rw', coerce => 1);
 
+=head1 NAME
+
+Bb::Collaborate::Ultra::LaunchContext - Session Launch Context
+
+=head1 DESCRIPTION
+
+This class is used to construct details for joining a session,
+including user identification and permissions.
+
+    my $user = Bb::Collaborate::Ultra::User->new({
+	extId => 'testLaunchUser',
+	displayName => 'David Warring',
+	email => 'david.warring@gmail.com',
+	firstName => 'David',
+	lastName => 'Warring',
+    });
+
+    my $launch_context =  Bb::Collaborate::Ultra::LaunchContext->new({ launchingRole => 'moderator',
+	 editingPermission => 'writer',
+	 user => $user,
+	 });
+
+=head1 METHODS
+
+=cut
+    
+=head2 join_session
+
+    my $join_url = $launch_context->join_session($session);
+
+Obtain a url to join a particular session.
+
+=cut
+
+
 sub join_session {
     my $self = shift;
     my $session = shift;
