@@ -35,8 +35,8 @@ is $session->id, 'abc123456', 'session->id';
 
 my $frozen;
 my $thawed;
-is exception { $frozen = from_json($session->freeze) }, undef, '$session->freeze - lives';
-is exception { $thawed = $session->thaw($frozen) }, undef, '$session->thaw - lives';
+is exception { $frozen = from_json($session->_freeze) }, undef, '$session->_freeze - lives';
+is exception { $thawed = $session->_thaw($frozen) }, undef, '$session->_thaw - lives';
 is_deeply $thawed, \%session_data, '$session data freeze/thaw round-trip';
 is exception { Bb::Collaborate::Ultra::Session->new($thawed) }, undef, '$session recreate from roundtrip data';
 
@@ -64,7 +64,7 @@ is exception { $user = Bb::Collaborate::Ultra::User->new(\%user_data)}, undef, '
 isa_ok $user, 'Bb::Collaborate::Ultra::User', 'user';
 is $user->id, 'xyz345', 'user->id';
 is $user->userName, 'Alice', 'user->userName';
-is exception { $thawed = from_json $user->freeze, }, undef, 'user freeze/thaw round trip - lives';
+is exception { $thawed = from_json $user->_freeze, }, undef, 'user freeze/thaw round trip - lives';
 is_deeply $thawed, \%user_data, 'user freeze/thaw round trip - data';
 
 # ----------------------------------------------------------------
@@ -90,7 +90,7 @@ isa_ok $user, 'Bb::Collaborate::Ultra::User', 'launch_context->user';
 is $user->id, 'xyz248', 'launch_context->user->id';
 is $user->userName, 'Bob', 'launch_context->user->userName';
 
-is exception { $thawed = from_json $launch_context->freeze }, undef, 'launch context freeze/thaw round-trip - lives';
+is exception { $thawed = from_json $launch_context->_freeze }, undef, 'launch context freeze/thaw round-trip - lives';
 is_deeply $thawed, \%launch_context_data, 'launch context freeze/thaw round trip - data';
 
 # ----------------------------------------------------------------

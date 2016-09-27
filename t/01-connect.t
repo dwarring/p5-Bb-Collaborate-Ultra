@@ -20,7 +20,7 @@ SKIP: {
     is exception { $connection->connect; }, undef, "connection lives";
 
     my $auth = $connection->auth;
-    isa_ok $auth, 'Bb::Collaborate::Ultra::Connection::Auth', 'auth';
+    isa_ok $auth, 'Bb::Collaborate::Ultra::Connection::Token', 'auth';
     my $leased = $auth->_leased;
     ok $leased, '_leased';
 

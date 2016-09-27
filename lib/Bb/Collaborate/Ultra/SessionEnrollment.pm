@@ -4,6 +4,13 @@ use Mouse;
 extends 'Bb::Collaborate::Ultra';
 __PACKAGE__->resource('enrollments');
 __PACKAGE__->load_schema(<DATA>);
+
+=head1 NAME
+
+Bb::Collaborate::Ultra::SessionEnrollment - Session enrollment
+
+=cut
+
 # downloaded from https://xx-csa.bbcollab.com/documentation
 1;
 __DATA__

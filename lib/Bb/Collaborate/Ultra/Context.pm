@@ -10,6 +10,40 @@ __PACKAGE__->query_params(
     extId => 'Str',
     );
 
+=head1 NAME
+
+Bb::Collaborate::Ultra::Context - Session/recording context
+
+=head1 DESCRIPTION
+
+A Context entity allows for grouping or classification of sessions and associated recordings.
+
+=head1 METHODS
+
+=cut
+    
+=head2 associate_session
+
+    my $now = time();
+    my $session = Bb::Collaborate::Ultra::Session->post($connection, {
+	    name => 'My Session',
+	    startTime => $now,
+	    endTime   => $now + 1800,
+	    },
+	);
+    my $context = Bb::Collaborate::Ultra::Context->find_or_create(
+	    $connection, {
+		extId => 'demo-sessions',
+		name => 'Demo Sessions',
+	    });
+    $context->associate_session($session);
+
+    # retreive all sessions that have been associated with this context
+
+    my @sessions = Bb::Collaborate::Ultra::Session->get($connection, {contextId => $context->id, limit => 5}, )
+
+=cut
+
 sub associate_session {
     my $self = shift;
     my $session = shift;
@@ -18,8 +52,8 @@ sub associate_session {
 	unless ref($self) && $session;
     my $session_id = $session->id;
     my $path = $self->path . '/sessions';
-    my $json = $session->freeze( { id => $session_id } );
-    $self->connection->post($path, $json );
+    my $json = $session->_freeze( { id => $session_id } );
+    $self->connection->POST($path, $json );
 }
 
 # downloaded from https://xx-csa.bbcollab.com/documentation

@@ -1,5 +1,13 @@
 package Bb::Collaborate::Ultra::Util;
 
+=head1 NAME
+
+ Bb::Collaborate::Ultra::Util - Utility functiions for Collaborate Ultra
+
+=head1 FUNCTIONS
+
+=cut
+
 use Scalar::Util;
 use Date::Parse qw<str2time>;
 sub freeze {

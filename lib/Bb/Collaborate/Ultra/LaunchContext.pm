@@ -11,8 +11,8 @@ sub join_session {
     my $connection = shift || $session->connection
 	or die "not connected";
     my $session_path = $session->path.'/url';
-    my $data = $self->freeze;
-    my $response = $connection->post($session_path, $data);
+    my $data = $self->_freeze;
+    my $response = $connection->POST($session_path, $data);
     my $msg = $response;
     $msg->{url};
 }

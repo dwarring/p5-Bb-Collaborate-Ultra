@@ -7,8 +7,13 @@ use Mouse::Util::TypeConstraints;
 coerce __PACKAGE__, from 'HashRef' => via {
     __PACKAGE__->new( $_ )
 };
- 
 __PACKAGE__->load_schema(<DATA>);
+
+=head1 NAME
+
+Bb::Collaborate::Ultra::Session::RecurrenceRule
+
+=cut
  
 1;
 # downloaded from https://xx-csa.bbcollab.com/documentation

@@ -12,11 +12,25 @@ __PACKAGE__->query_params(
     endTime => 'Date'
     );
 
+=head1 NAME
+
+Bb::Collaborate::Ultra::Recording - Session Recordings
+
+=head1 METHODS
+
+=cut
+    
+=head2 url
+
+Returns a play-back URL for the recording
+
+=cut
+
 sub url {
     my $self = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/url';
-    my $response = $connection->get($path);
+    my $response = $connection->GET($path);
     $response->{url};
 }
 

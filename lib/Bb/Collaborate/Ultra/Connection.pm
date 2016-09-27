@@ -6,14 +6,22 @@ use JSON;
 use Mouse;
 use REST::Client;
 use Try::Tiny;
-use Bb::Collaborate::Ultra::Connection::Auth;
+use Bb::Collaborate::Ultra::Connection::Token;
+
+=head1 NAME
+
+Bb::Collaborate::Ultra::Connection - manage a server connection
+
+=head1 METHODS
+
+=cut
 
 has 'issuer' => (is => 'rw', isa => 'Str', required => 1);
 has 'secret' => (is => 'rw', isa => 'Str', required => 1);
 has 'host'   => (is => 'rw', isa => 'Str', required => 1);
 
 has '_client' => (is => 'rw', isa => 'REST::Client' );
-has 'auth'  =>  (is => 'rw', isa => 'Bb::Collaborate::Ultra::Connection::Auth' ); 
+has 'auth'  =>  (is => 'rw', isa => 'Bb::Collaborate::Ultra::Connection::Token' ); 
 has 'debug'  =>  (is => 'rw', isa => 'Int' );
 
 sub _response {
@@ -43,21 +51,65 @@ sub _response {
 use constant JWS_RSA_256 => 'HS256';
 use constant JWT_EXPIRY => 4 * 60; # 4 minutes
 
+=head2 connect
+
+This method should be called once, with a newly created L<Bb::Collaborate::Ultra::Connection>
+object to contact the server and authorize the credentials.
+
+	my %credentials = (
+	  issuer => 'OUUK-REST-API12340ABCD',
+	  secret => 'ABCDEF0123456789AA',
+	  host => 'https://xx-csa.bbcollab.com',
+	);
+
+	# connect to server
+	my $connection = Bb::Collaborate::Ultra::Connection->new(\%credentials);
+        $connection->connect;
+
+=cut
+
+sub connect {
+    my $self = shift;
+
+    my $client = $self->client;
+
+    $self->renew_lease
+	unless $self->auth;
+}
+
+=head2 client
+
+Returns a clinent connection of type L<REST::Client>.
+
+=cut
+
 sub client {
     my $self = shift;
     my $client = $self->_client;
     unless ($client) {
 	$client= REST::Client->new;
-	$client->setHost( $self->host);
+	$client->setHost($self->host);
 	$self->_client($client);
     }
     $client;
 }
 
+=head2 renew_lease
+
+    if ($connection->auth->expires_in < time() + 60) {
+        # connection is about to expire; keep it alive.
+        $connection->renew_lease;
+    }
+
+A authorization token typically remains valid for several minutes. This method
+can be used to extend the lease, whilst keeping the current connection.
+
+=cut
+
 sub renew_lease {
     my $self = shift;
     my $expiry = shift || time()  +  JWT_EXPIRY;
-    my $class = 'Bb::Collaborate::Ultra::Connection::Auth';
+    my $class = 'Bb::Collaborate::Ultra::Connection::Token';
     my $client = $self->client;
 
     my $claims = {
@@ -82,16 +134,20 @@ sub renew_lease {
     $self->auth( $auth );
 }
 
-sub connect {
-    my $self = shift;
+=head2 POST
 
-    my $client = $self->client;
+This is a low level post of formatted JSON data.
 
-    $self->renew_lease
-	unless ($self->auth);
-}
+    my $response = $connection->POST('sessions', '{"startTime":"2016-09-27T05:10:04Z","endTime":"2016-09-27T05:25:04Z","name":"Test Session"}');
+    my $session = Bb::Collaborate::Ultra::Session->construct($response, connection => $connectioon);
 
-sub post {
+You usually shouldn't need to call this routine directly. For example, the following is preferred for session creation:
+
+    my $session = Bb::Collaborate::Ultra::Session->post({startTime => time(), endTime => time() + 900, name => 
+
+=cut
+
+sub POST {
     my $self = shift;
     my $path = shift;
     my $json = shift;
@@ -103,7 +159,7 @@ sub post {
     $self->_response;
 }
 
-sub put {
+sub PUT {
     my $self = shift;
     my $path = shift;
     my $json = shift;
@@ -115,7 +171,7 @@ sub put {
     $self->_response;
 }
 
-sub get {
+sub GET {
     my $self = shift;
     my $path = shift;
     warn "GET: $path\n" if $self->debug;
@@ -126,7 +182,7 @@ sub get {
     $self->_response;
 }
 
-sub del {
+sub DEL {
     my $self = shift;
     my $path = shift;
     my $query_data = shift || {};

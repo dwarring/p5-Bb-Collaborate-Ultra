@@ -1,0 +1,76 @@
+NAME
+
+Bb::Collaborate::Ultra - Perl 5 bindings to Collaborate Ultra Virtual Classroom Software (Under Construction)
+
+SYNOPSIS
+
+    use Bb::Collaborate::Ultra::Connection;
+    use Bb::Collaborate::Ultra::Session;
+    use Bb::Collaborate::Ultra::User;
+    use Bb::Collaborate::Ultra::LaunchContext;
+
+	my %credentials = (
+	  issuer => 'OUUK-REST-API12340ABCD',
+	  secret => 'ABCDEF0123456789AA',
+	  host => 'https://xx-csa.bbcollab.com',
+	);
+
+	# connect to server
+	my $connection = Bb::Collaborate::Ultra::Connection->new(\%credentials);
+	$connection->connect;
+
+	# create a virtual classroom, starts now runs, for 15 minutes
+	my $start = time() + 60;
+	my $end = $start + 900;
+	my $session = Bb::Collaborate::Ultra::Session->post($connection, {
+		name => 'Test Session',
+		startTime => $start,
+		endTime   => $end,
+		},
+	    );
+
+	# define a session user
+	my $user = Bb::Collaborate::Ultra::User->new({
+	    extId => 'dwarring',
+	    displayName => 'David Warring',
+	    email => 'david.warring@gmail.com',
+	    firstName => 'David',
+	    lastName => 'Warring',
+	});
+
+	# register the user. obtain a join URL
+	my $launch_context =  Bb::Collaborate::Ultra::LaunchContext->new({
+	      launchingRole => 'moderator',
+	      editingPermission => 'writer',
+	      user => $user,
+	     });
+	 my $url = $launch_context->join_session($session);
+
+
+DESCRIPTION
+
+This Perl 5 module provides bindings to the the Collaborate (*) Services RESTful API. These support the CRUD and processing operations for the scheduling and access to HTML sessions.
+
+Authentication is via the OAuth 2.0 protocol. This module
+supports the JWT Token Flow.
+
+(*) Blackboard Collaborate Ultra is a virtual classroom web service based on the WebRTC (Real Time Chat) protocol.
+
+Resources and Schemas
+
+These services are described in https://xx-csa.bbcollab.com/documentation.
+
+Each resource class and schema is represented by a Perl 5 class:
+
+- Context - Bb::Collaborate::Ultra::Context
+- Session - Bb::Collaborate::Ultra::Session
+- Recording - Bb::Collaborate::Ultra::Recording
+
+RESTful Services
+
+Bb::Collaborate::Ultra::Connection - manages RESTful connections and provides low level `get`, `put`, `post` and `del` methods.
+
+BUGS AND LIMITATIONS
+
+- This module does not yet support resource types: Users, Enrollments or Courses
+- JWT Username-Password authentication are not yet supported.

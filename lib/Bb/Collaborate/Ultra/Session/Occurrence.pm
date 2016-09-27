@@ -1,9 +1,17 @@
 package Bb::Collaborate::Ultra::Session::Occurrence;
- use warnings; use strict;
- use Mouse;
- use JSON;
- extends 'Bb::Collaborate::Ultra';
+use warnings; use strict;
+use Mouse;
+use JSON;
+extends 'Bb::Collaborate::Ultra';
 use Mouse::Util::TypeConstraints;
+
+=head1 NAME
+
+Bb::Collaborate::Ultra::Session::Occurrence
+
+=cut
+    
+
 coerce __PACKAGE__, from 'HashRef' => via {
     __PACKAGE__->new( $_ )
 };
