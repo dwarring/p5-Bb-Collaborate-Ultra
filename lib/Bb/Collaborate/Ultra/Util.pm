@@ -8,6 +8,7 @@ package Bb::Collaborate::Ultra::Util;
 
 =cut
 
+use warnings; use strict;
 use Scalar::Util;
 use Date::Parse qw<str2time>;
 sub _freeze {
@@ -47,7 +48,7 @@ sub _freeze {
 		$_ = $_ + 0;
 	    }
 	    elsif ($type =~ m{^Date}) {
-		($sec,$min,$hr,$day,$mon,$year) = gmtime $_;
+		my ($sec,$min,$hr,$day,$mon,$year) = gmtime $_;
 		$_ = sprintf "%04d-%02d-%02dT%02d:%02d:%02dZ",
 		$year+1900, $mon+1, $day, $hr, $min, $sec;
 	    }
