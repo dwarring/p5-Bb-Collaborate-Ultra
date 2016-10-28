@@ -355,7 +355,8 @@ sub TO_JSON {
 	};
 	    
 	my $val = $data->{$fld};
-	$frozen{$fld} = Bb::Collaborate::Ultra::Util::_freeze($val, $type);
+	$frozen{$fld} = Bb::Collaborate::Ultra::Util::_freeze($val, $type)
+	    if defined $val;
     }
     \%frozen;
 }
@@ -375,7 +376,8 @@ sub _thaw {
     for my $fld (keys %$data) {
 	if (exists $types->{$fld}) {
 	    my $val = $data->{$fld};
-	    $thawed{$fld} = Bb::Collaborate::Ultra::Util::_thaw($val, $types->{$fld});
+	    $thawed{$fld} = Bb::Collaborate::Ultra::Util::_thaw($val, $types->{$fld})
+		if defined $val;
 	}
 	else {
 	    warn "ignoring field: $fld";
