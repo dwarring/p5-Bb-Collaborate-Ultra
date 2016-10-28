@@ -25,7 +25,7 @@ use 5.008003;
 
 =head1 DESCRIPTION
 
-Blackboard Collaborate Ultira is software for virtual web classrooms. It is
+Blackboard Collaborate Ultra is software for virtual web classrooms. It is
 suitable for meetings, demonstrations web conferences, seminars, general
 training and support.
 
