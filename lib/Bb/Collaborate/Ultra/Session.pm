@@ -72,7 +72,7 @@ sub enrollments {
 __DATA__
                 {
   "type" : "object",
-  "id" : "Session",
+  "id" : "urn:jsonschema:com:blackboard:collaborate:csl:core:dto:Session",
   "properties" : {
     "telephonyPhoneNumber" : {
       "type" : "string"
@@ -84,6 +84,9 @@ __DATA__
       "type" : "boolean"
     },
     "participantCanUseTools" : {
+      "type" : "boolean"
+    },
+    "largeSessionEnable" : {
       "type" : "boolean"
     },
     "endTime" : {
@@ -131,7 +134,7 @@ __DATA__
       "type" : "array",
       "items" : {
         "type" : "object",
-        "id" : "SessionOccurrence",
+        "id" : "urn:jsonschema:com:blackboard:collaborate:csl:core:dto:SessionOccurrence",
         "properties" : {
           "id" : {
             "type" : "string"
@@ -162,7 +165,7 @@ __DATA__
     },
     "recurrenceRule" : {
       "type" : "object",
-      "id" : "RecurrenceRule",
+      "id" : "urn:jsonschema:com:blackboard:collaborate:csl:core:dto:RecurrenceRule",
       "properties" : {
         "recurrenceEndType" : {
           "type" : "string",
@@ -241,9 +244,11 @@ __DATA__
     "allowInSessionInvitees" : {
       "type" : "boolean"
     },
+    "canEnableLargeSession" : {
+      "type" : "boolean"
+    },
     "canShareAudio" : {
       "type" : "boolean"
     }
   }
 }
-
