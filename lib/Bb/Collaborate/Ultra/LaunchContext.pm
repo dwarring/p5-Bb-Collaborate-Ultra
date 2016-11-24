@@ -29,6 +29,8 @@ including user identification and permissions.
 
 =head1 METHODS
 
+See L<https://xx-csa.bbcollab.com/documentation#Launch-context>.
+
 =cut
     
 =head2 join_session

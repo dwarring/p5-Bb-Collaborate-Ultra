@@ -25,7 +25,21 @@ Bb::Collaborate::Ultra::Session
 
 This class is used to manage Sessions (Virtual Classrooms).
 
-=head2 METHODS
+    use Bb::Collaborate::Ultra::Session;
+    my $start = time() + 60;
+    my $end = $start + 900;
+
+    my $session;
+    my $session = Bb::Collaborate::Ultra::Session->post($connection, {
+	    name => 'Test Session',
+	    startTime => $start,
+	    endTime   => $end,
+	    },
+	);
+
+=head1 METHODS
+
+See L<https://xx-csa.bbcollab.com/documentation#Session>
 
 =cut
 

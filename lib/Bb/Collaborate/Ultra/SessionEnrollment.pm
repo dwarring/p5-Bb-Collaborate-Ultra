@@ -9,6 +9,10 @@ __PACKAGE__->load_schema(<DATA>);
 
 Bb::Collaborate::Ultra::SessionEnrollment - Session enrollments
 
+=head2 METHODS
+
+See L<https://xx-csa.bbcollab.com/documentation#SessionEnrollment>
+
 =cut
 
 # downloaded from https://xx-csa.bbcollab.com/documentation

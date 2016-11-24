@@ -13,6 +13,14 @@ __PACKAGE__->load_schema(<DATA>);
 
 Bb::Collaborate::Ultra::Session::RecurrenceRule
 
+=head1 DESCRIPTION
+
+Session scheduling subrecord.
+
+=head1 METHODS
+
+See L<https://xx-csa.bbcollab.com/documentation#Session>
+
 =cut
  
 1;

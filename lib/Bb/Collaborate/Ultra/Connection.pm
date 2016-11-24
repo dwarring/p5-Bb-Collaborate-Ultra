@@ -12,6 +12,20 @@ use Bb::Collaborate::Ultra::Connection::Token;
 
 Bb::Collaborate::Ultra::Connection - manage a server connection
 
+=head2 DESCRIPTION
+
+This class is used to maintain connections to Blackboard Ultra virtual
+classroom servers.
+
+	require Bb::Collaborate::Ultra::Connection;
+	my %params = (
+	    issuer => 'my-client-key',
+            secret => 'sssh!',
+            host => 'https://xx-csa.bbcollab.com',
+	);
+	my $connection = Bb::Collaborate::Ultra::Connection->new(\%params);
+
+
 =head1 METHODS
 
 =cut
@@ -21,6 +35,22 @@ has 'secret' => (is => 'rw', isa => 'Str', required => 1);
 has 'host'   => (is => 'rw', isa => 'Str', required => 1);
 
 has '_client' => (is => 'rw', isa => 'REST::Client' );
+
+=head2 auth
+
+Holds the authorization token, obtained from the Collaborate server.
+
+The connect method mast be invoked to obtain an C<auth> token. The C<renew_lease> method may be later used to extend the session, obtaining
+an new C<auth> token.
+
+=head2 debug
+
+    $connection->debug(1);  # enable debugging
+
+When set, a trace si enabled of requests and responses to and from the Collaborate server
+
+=cut
+
 has 'auth'  =>  (is => 'rw', isa => 'Bb::Collaborate::Ultra::Connection::Token' ); 
 has 'debug'  =>  (is => 'rw', isa => 'Int' );
 
@@ -53,8 +83,7 @@ use constant JWT_EXPIRY => 4 * 60; # 4 minutes
 
 =head2 connect
 
-This method should be called once, with a newly created L<Bb::Collaborate::Ultra::Connection>
-object to contact the server and authorize the credentials.
+This method should be called once, with a newly created L<Bb::Collaborate::Ultra::Connection> object to contact the server and authorize the credentials.
 
 	my %credentials = (
 	  issuer => 'OUUK-REST-API12340ABCD',
@@ -79,7 +108,7 @@ sub connect {
 
 =head2 client
 
-Returns a clinent connection of type L<REST::Client>.
+Returns the underlying client connection of type L<REST::Client>.
 
 =cut
 
@@ -164,7 +193,7 @@ sub POST {
 Low level method. Put JSON data formatted data.
 
     my $session_id = $session->id;
-    my $response = $connection->PUT('sessions/'$session_id, '{"name":"Test Session - Updated"}');
+    my $response = $connection->PUT('sessions/'.$session_id, '{"name":"Test Session - Updated"}');
 
 =cut
 
@@ -185,7 +214,7 @@ sub PUT {
 Low level method. Get by path
 
     my $session_id = $session->id;
-    my $response = $connection->GET('sessions/'$session_id);
+    my $response = $connection->GET('sessions/'.$session_id);
     $session = Bb::Collaborate::Ultra::Session->construct($response, connection => $connection);
 
 =cut
@@ -206,7 +235,7 @@ sub GET {
 Low level method. Delete by path
 
     my $session_id = $session->id;
-    my $response = $connection->DEL('sessions/'$session_id);
+    my $response = $connection->DEL('sessions/'.$session_id);
 
 =cut
 

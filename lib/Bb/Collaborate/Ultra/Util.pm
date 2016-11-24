@@ -4,7 +4,9 @@ package Bb::Collaborate::Ultra::Util;
 
  Bb::Collaborate::Ultra::Util - Utility functiions for Collaborate Ultra
 
-=head1 FUNCTIONS
+=head1 DESCRIPTION
+
+For internal use only.
 
 =cut
 

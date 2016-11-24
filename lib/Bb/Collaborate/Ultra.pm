@@ -11,7 +11,7 @@ use Clone;
 
 =head1 NAME
 
-Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classroms
+Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classrooms
 
 =head1 VERSION
 

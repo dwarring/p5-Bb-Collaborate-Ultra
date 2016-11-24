@@ -9,6 +9,14 @@ use Mouse::Util::TypeConstraints;
 
 Bb::Collaborate::Ultra::Session::Occurrence
 
+=head1 DESCRIPTION
+
+Session scheduling subrecord.
+
+=head1 METHODS
+
+See L<https://xx-csa.bbcollab.com/documentation#Session>
+
 =cut
     
 

@@ -18,6 +18,8 @@ Bb::Collaborate::Ultra::Recording - Session Recordings
 
 =head1 METHODS
 
+See L<https://xx-csa.bbcollab.com/documentation#Recording>.
+
 =cut
     
 =head2 url

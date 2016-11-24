@@ -11,6 +11,10 @@ Bb::Collaborate::Ultra::User - Launch Context User
 
 See also L<Bb::Collaborate::Ultra::LaunchContext>.
 
+=head2 METHODS
+
+See L<https://xx-csa.bbcollab.com/documentation#User>
+
 =cut
 
 has 'ltiLaunchDetails' => (isa => 'Any', is => 'rw');

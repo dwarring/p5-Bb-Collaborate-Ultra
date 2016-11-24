@@ -20,6 +20,8 @@ A Context entity allows for grouping or classification of sessions and associate
 
 =head1 METHODS
 
+See L<https://xx-csa.bbcollab.com/documentation#Context>.
+
 =cut
     
 =head2 associate_session
