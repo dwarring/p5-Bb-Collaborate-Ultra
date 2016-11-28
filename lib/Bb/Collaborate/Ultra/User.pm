@@ -1,7 +1,7 @@
 package Bb::Collaborate::Ultra::User;
 use warnings; use strict;
 use Mouse;
-extends 'Bb::Collaborate::Ultra';
+extends 'Bb::Collaborate::Ultra::DAO';
 
 =head1 NAME
 

@@ -1,7 +1,7 @@
 package Bb::Collaborate::Ultra::LaunchContext;
 use warnings; use strict;
 use Mouse;
-extends 'Bb::Collaborate::Ultra';
+extends 'Bb::Collaborate::Ultra::DAO';
 use Bb::Collaborate::Ultra::User;
 has 'user' => (isa => 'Bb::Collaborate::Ultra::User', is => 'rw', coerce => 1);
 

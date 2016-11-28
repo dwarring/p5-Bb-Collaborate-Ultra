@@ -1,7 +1,7 @@
 package Bb::Collaborate::Ultra::Session;
 use warnings; use strict;
 use Mouse;
-extends 'Bb::Collaborate::Ultra';
+extends 'Bb::Collaborate::Ultra::DAO';
 
 use Bb::Collaborate::Ultra::Session::Occurrence;
 use Bb::Collaborate::Ultra::Session::RecurrenceRule;

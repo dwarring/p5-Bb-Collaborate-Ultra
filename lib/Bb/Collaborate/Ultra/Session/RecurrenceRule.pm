@@ -2,7 +2,7 @@ package Bb::Collaborate::Ultra::Session::RecurrenceRule;
 use warnings; use strict;
 use Mouse;
 use JSON;
-extends 'Bb::Collaborate::Ultra';
+extends 'Bb::Collaborate::Ultra::DAO';
 use Mouse::Util::TypeConstraints;
 coerce __PACKAGE__, from 'HashRef' => via {
     __PACKAGE__->new( $_ )

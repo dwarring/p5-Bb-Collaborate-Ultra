@@ -2,7 +2,7 @@ package Bb::Collaborate::Ultra::Session::Occurrence;
 use warnings; use strict;
 use Mouse;
 use JSON;
-extends 'Bb::Collaborate::Ultra';
+extends 'Bb::Collaborate::Ultra::DAO';
 use Mouse::Util::TypeConstraints;
 
 =head1 NAME

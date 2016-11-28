@@ -1,6 +1,5 @@
 package Bb::Collaborate::Ultra::Connection;
 use warnings; use strict;
-use Bb::Collaborate::Ultra;
 use Crypt::JWT qw(encode_jwt decode_jwt);
 use JSON;
 use Mouse;

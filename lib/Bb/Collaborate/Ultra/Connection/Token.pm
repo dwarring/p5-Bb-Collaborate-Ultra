@@ -1,6 +1,6 @@
 package Bb::Collaborate::Ultra::Connection::Token;
 use Mouse;
-extends 'Bb::Collaborate::Ultra';
+extends 'Bb::Collaborate::Ultra::DAO';
 use warnings; use strict;
 __PACKAGE__->resource('token');
 has 'access_token' => (is => 'rw', isa => 'Str');
