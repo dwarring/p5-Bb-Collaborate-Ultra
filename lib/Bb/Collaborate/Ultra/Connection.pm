@@ -187,21 +187,21 @@ sub POST {
     $self->_response;
 }
 
-=head2 PUT
+=head2 PATCH
 
 Low level method. Put JSON data formatted data.
 
     my $session_id = $session->id;
-    my $response = $connection->PUT('sessions/'.$session_id, '{"name":"Test Session - Updated"}');
+    my $response = $connection->PATCH('sessions/'.$session_id, '{"name":"Test Session - Updated"}');
 
 =cut
 
-sub PUT {
+sub PATCH {
     my $self = shift;
     my $path = shift;
     my $json = shift;
-    warn "PUT: $path   $json\n" if $self->debug;
-    $self->client->PUT($path, $json, {
+    warn "PATCH: $path   $json\n" if $self->debug;
+    $self->client->PATCH($path, $json, {
 	'Content-Type' => 'application/json',
 	'Authorization' => 'Bearer ' . $self->auth->access_token,
     },);

@@ -27,7 +27,9 @@ our %enums;
 
 L<Bb::Collaborate::Ultra::DAO> is an abstract base class for various resource classess (e.g. L<Bb::Collaborate::Ultra::Session>) and contains both builder and inherited methods from implementing these classes.
 
-=head1 METHODS
+=head1 ABSTRACT METHODS
+
+The following methods are inherited from this class.
 
 =cut
     
@@ -39,7 +41,16 @@ Creates a new object.
     
 =head2 post
 
-Saves a newly created object on the server.
+Creates object on the server. E.g.
+
+    my $start = time() + 60;
+    my $end = $start + 900;
+    my $session = Bb::Collaborate::Ultra::Session->post($connection, {
+	    name => 'Test Session',
+	    startTime => $start,
+	    endTime   => $end,
+	    },
+	);
 
 =cut
     
@@ -56,13 +67,17 @@ sub post {
     $class->construct($msg, connection => $connection);
 }
 
-=head2 put
+=head2 patch
 
 Updates an existing object
 
+    $session->name('Test Session - Updated');
+    $session->endTime($session->endTime + 60);
+    $session->patch; # enact updates
+
 =cut
 
-sub put {
+sub patch {
     my $self = shift;
     my $connection = shift || $self->connection
 	|| die "no connected";
@@ -70,7 +85,7 @@ sub put {
     my $class = ref($self) || $self;
     my $path = $self->path;
     my $json = $class->_freeze($update_data);
-    my $msg = $connection->PUT($path, $json);
+    my $msg = $connection->PATCH($path, $json);
     my $obj = $self->construct($msg, connection => $connection);
     if ($self) {
 	$self->_db_data( $obj->_db_data );
@@ -82,6 +97,8 @@ sub put {
 =head2 get
 
 Fetches one or more objects from the server.
+
+    my @future_sessions = Bb::Collaborate::Ultra::Session->get($connection, {endTime => time(), limit => 50}, )
 
 =cut
 
@@ -108,6 +125,8 @@ sub get {
 =head2 del
 
 Deletes an object from the server
+
+    $session->del;
 
 =cut
 
@@ -192,17 +211,18 @@ Returns any parent class for the object. May be used to compute the path.
 =head2 changed
 
 Returns a list of fields that have been updated since the
-object was last saved via a `put`, or `post`, or fetched
+object was last saved via a `patch`, or `post`, or fetched
 via a `get`.
 
 =cut
 
 sub changed {
     my $self = shift;
-    my $data = $self->_raw_data;
     my @changed;
 
     if (my $old_data = $self->_db_data) {
+	my $types = $self->_property_types;
+	my $data = $self->_raw_data;
 	# include only key and changed data
 	for my $fld (sort keys %$data) {
 	    # ignore time-stamps
@@ -211,10 +231,20 @@ sub changed {
 	    my $old_val = $old_data->{$fld};
 	    push @changed, $fld
 		    if !defined($old_val)
-		    || !Compare($old_val, $new_val);
+		    || $self->_compare($types->{$fld}, $old_val, $new_val);
 	}
     }
     @changed;
+}
+
+sub _compare {
+    my $self = shift;
+    my $type = shift;
+    my $v1 = shift;
+    my $v2 = shift;
+    $type eq 'Bool'
+	? ($v1? 1: 0) == ($v2? 0 : 1)
+	: !Compare($v1, $v2);
 }
 
 sub _pending_updates {
@@ -224,9 +254,6 @@ sub _pending_updates {
     @pending{ $self->changed } = undef;
     # pass the primary key
     $pending{id} = undef; 
-    ## seems we need to pass these!?
-    $pending{startTime} = undef if $data->{startTime};
-    $pending{endTime} = undef if $data->{endTime};
     my %updates = map { $_ => $data->{$_} } (sort keys %pending);
     \%updates;
 }
@@ -234,7 +261,7 @@ sub _pending_updates {
 =head2 connection
 
 Returns the connection associated with the object. Will be set if
-the object has been fetched via a `get`, added via a `store` or updated via a `put`.
+the object has been fetched via a `get`, added via a `post` or updated via a `patch`.
 
 =cut
 
