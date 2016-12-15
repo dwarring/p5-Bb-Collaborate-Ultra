@@ -19,4 +19,4 @@ before_install:
     - cpanm Module::Install
 
 install:
-    - "(perl Makefile.PL && cpanm --installdeps . && make test && make dist)"
+    - "(perl Makefile.PL && cpanm --installdeps . && make manifest && make test && make dist)"
