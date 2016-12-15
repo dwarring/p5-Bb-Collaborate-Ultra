@@ -243,8 +243,10 @@ sub _compare {
     my $v1 = shift;
     my $v2 = shift;
     $type eq 'Bool'
-	? ($v1? 1: 0) == ($v2? 0 : 1)
-	: !Compare($v1, $v2);
+	? ($v1? 1: 0) != ($v2? 1 : 0)
+	: ($type eq 'Date'
+	      ? do { abs($v1 - $v2) > 1 }  # allow for rounding
+              : !Compare($v1, $v2));
 }
 
 sub _pending_updates {

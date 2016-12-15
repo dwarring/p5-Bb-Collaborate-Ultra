@@ -37,11 +37,11 @@ SKIP: {
     my @changed = $session->changed;
     is_deeply \@changed, ['endTime', 'name'], 'changed fields';
     my $updates = $session->_pending_updates;
-    is_deeply $updates, { 'id' => $session->id, name => 'Test Session - Updated', startTime => $session->startTime, endTime => $session->endTime, }, 'updateable data';
+    is_deeply $updates, { 'id' => $session->id, name => 'Test Session - Updated', endTime => $session->endTime, }, 'updateable data';
     is exception { $session->patch }, undef, 'patch updates - lives';
     $updates = $session->_pending_updates;
     delete $updates->{active}; # ignore this
-    is_deeply $updates, { 'id' => $session->id, , startTime => $session->startTime, endTime => $session->endTime,}, 'updates are flushed';
+    is_deeply $updates, { 'id' => $session->id, }, 'updates are flushed';
     my @enrollments = $session->enrollments;
     is scalar @enrollments, 0, 'no session enrolments yet';
 
