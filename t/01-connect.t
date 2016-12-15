@@ -6,8 +6,11 @@ use lib '.';
 use t::Ultra;
 use Date::Parse;
 use Scalar::Util qw<looks_like_number>;
+use Bb::Collaborate::Ultra;
+use Bb::Collaborate::Ultra::Session;
 
 SKIP: {
+      diag( "Testing Bb::Collaborate::Ultra $Bb::Collaborate::Ultra::VERSION, Perl $], $^X" );
     my %t = t::Ultra->test_connection;
     my $connection = $t{connection};
     skip $t{skip} || 'skipping live tests', 16
@@ -34,7 +37,6 @@ SKIP: {
     ok $expires > 0 && $expires <= 1000, 'expires_in'
 	or diag "expires: $expires";
 
-    use Bb::Collaborate::Ultra::Session;
     my $start = $t + 300;
     my $end = $start + 1800;
 

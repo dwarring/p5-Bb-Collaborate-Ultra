@@ -1,9 +1,9 @@
 NAME
-
+====
 Bb::Collaborate::Ultra - Perl 5 bindings to Collaborate Ultra Virtual Classroom Software (Under Construction)
 
 SYNOPSIS
-
+========
     use Bb::Collaborate::Ultra::Connection;
     use Bb::Collaborate::Ultra::Session;
     use Bb::Collaborate::Ultra::User;
@@ -48,16 +48,13 @@ SYNOPSIS
 
 
 DESCRIPTION
-
+===========
 This Perl 5 module provides bindings to the the Collaborate (*) Services RESTful API. These support the CRUD and processing operations for the scheduling and access to HTML sessions.
-
-Authentication is via the OAuth 2.0 protocol. This module
-supports the JWT Token Flow.
 
 (*) Blackboard Collaborate Ultra is a virtual classroom web service based on the WebRTC (Real Time Chat) protocol.
 
 Resources and Schemas
-
+---------------------
 These services are described in https://xx-csa.bbcollab.com/documentation.
 
 Each resource class and schema is represented by a Perl 5 class:
@@ -66,11 +63,13 @@ Each resource class and schema is represented by a Perl 5 class:
 - Session - Bb::Collaborate::Ultra::Session
 - Recording - Bb::Collaborate::Ultra::Recording
 
-RESTful Services
+Authentication
+--------------
+This is managed by the Bb::Collaborate::Ultra::Connection class
 
-Bb::Collaborate::Ultra::Connection - manages RESTful connections and provides low level `get`, `put`, `post` and `del` methods.
+Authentication is via the OAuth 2.0 protocol, using the JWT Token Flow, as described in the documentation.
 
 BUGS AND LIMITATIONS
-
-- This module does not yet support resource types: Users, Enrollments or Courses
-- JWT Username-Password authentication are not yet supported.
+====================
+- This module does not yet fully implement resource types: Users, Enrollments or Courses
+- JWT Username-Password authentication is not yet supported.
