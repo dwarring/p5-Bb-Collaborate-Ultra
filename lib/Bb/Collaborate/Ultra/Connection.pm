@@ -46,7 +46,7 @@ an new C<auth> token.
 
     $connection->debug(1);  # enable debugging
 
-When set, a trace si enabled of requests and responses to and from the Collaborate server
+When set, a trace is enabled of requests and responses to and from the Collaborate server
 
 =cut
 

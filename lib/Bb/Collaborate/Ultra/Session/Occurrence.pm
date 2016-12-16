@@ -11,7 +11,7 @@ Bb::Collaborate::Ultra::Session::Occurrence
 
 =head1 DESCRIPTION
 
-Session scheduling subrecord.
+Session scheduling sub-record.
 
 =head1 METHODS
 

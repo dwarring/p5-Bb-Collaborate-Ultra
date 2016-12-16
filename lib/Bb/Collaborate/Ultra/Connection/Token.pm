@@ -13,7 +13,7 @@ has '_leased' => (is => 'rw', isa => 'Date');
 
 =head1 DESCRIPTION
 
-This class is used to store security tokens, as supplied byt the REST server.
+This class is used to store security tokens, as supplied by the REST server.
 
 =head1 METHODS
 

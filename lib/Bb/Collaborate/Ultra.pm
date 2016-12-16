@@ -97,7 +97,7 @@ The above classes are based on Bb::Collaborate::Ultra::DAO, which  provides low 
 
 =item `post` creates new entities on the server
 
-=item `get` is used to fetched entities, by `id` or various other critera
+=item `get` is used to fetched entities, by `id` or various other criteria
 
 =item `patch` is used to update entities
 
@@ -117,7 +117,7 @@ Some conversion is needed between JSON and Perl:
 
 =back
 
-These conversions are applied on data being sent or recieved from the Collaborate Ultra server.
+These conversions are applied on data being sent or received from the Collaborate Ultra server.
 
 =head2 Authentication
 

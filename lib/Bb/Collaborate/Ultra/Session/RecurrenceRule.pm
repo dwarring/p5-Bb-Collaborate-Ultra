@@ -15,7 +15,7 @@ Bb::Collaborate::Ultra::Session::RecurrenceRule
 
 =head1 DESCRIPTION
 
-Session scheduling subrecord.
+Session scheduling sub-record.
 
 =head1 METHODS
 

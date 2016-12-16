@@ -40,7 +40,7 @@ See L<https://xx-csa.bbcollab.com/documentation#Context>.
 	    });
     $context->associate_session($session);
 
-    # retreive all sessions that have been associated with this context
+    # retrieve all sessions that have been associated with this context
 
     my @sessions = Bb::Collaborate::Ultra::Session->get($connection, {contextId => $context->id, limit => 5}, )
 

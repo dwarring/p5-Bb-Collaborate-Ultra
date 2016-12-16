@@ -25,7 +25,7 @@ our %enums;
 
 =pod
 
-L<Bb::Collaborate::Ultra::DAO> is an abstract base class for various resource classess (e.g. L<Bb::Collaborate::Ultra::Session>) and contains both builder and inherited methods from implementing these classes.
+L<Bb::Collaborate::Ultra::DAO> is an abstract base class for various resource classes (e.g. L<Bb::Collaborate::Ultra::Session>) and contains both builder and inherited methods from implementing these classes.
 
 =head1 ABSTRACT METHODS
 
@@ -142,7 +142,7 @@ sub del {
 
 =head2 find_or_create
 
-Attempts a C<get> on the object. If that fails, createas an new object on the server.
+Attempts a C<get> on the object. If that fails, creates an new object on the server.
 
 =cut
 
@@ -281,7 +281,7 @@ sub connection { shift->_connection(@_)}
         extId => 'Str',
     );
 
-This is used to specify any aditional layload fields that may be
+This is used to specify any additional payload fields that may be
 passed as query parameters, or returned along with object data. 
 
 =cut
@@ -317,7 +317,7 @@ Serializes an object to JSON., with data conversion.
 
 =over 4
 
-=item Dates are converted from numeric unix timestamps to date-strings
+=item Dates are converted from numeric Unix timestamps to date-strings
 
 =item Booleans are converted from numeric (0, 1) to 'true', or 'false'.
 

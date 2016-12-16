@@ -2,7 +2,7 @@ package Bb::Collaborate::Ultra::Util;
 
 =head1 NAME
 
- Bb::Collaborate::Ultra::Util - Utility functiions for Collaborate Ultra
+ Bb::Collaborate::Ultra::Util - Utility functions for Collaborate Ultra
 
 =head1 DESCRIPTION
 
@@ -34,7 +34,7 @@ sub _freeze {
 	    elsif ($type =~ m{^(Str|enum)}ix) {
 
 		#
-		# low level check for taintness. Only applicible when
+		# low level check for taintness. Only applicable when
 		# perl program is running in taint mode
 		#
 		die "attempt to freeze tainted data (type $type): $_"
@@ -68,7 +68,7 @@ sub _freeze {
 }
 
 #
-# thawing of elementry datatypes
+# thawing of elementary data-types
 #
 
 sub _thaw {
