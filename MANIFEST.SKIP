@@ -1,5 +1,6 @@
 # git
 \.git
+\.bak
 # Unreleased
 # Makemaker generated files and dirs.
 ^MANIFEST\.
@@ -35,3 +36,7 @@ Makefile.old
 # cygwin (Heh!)
 #
 \.stackdump$
+#
+# travis
+#
+.travis.yml
