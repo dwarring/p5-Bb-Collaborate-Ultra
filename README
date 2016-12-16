@@ -96,3 +96,11 @@ BUGS AND LIMITATIONS
 ====================
 - This module does not yet fully implement resource types: Users, Enrollments or Courses
 - JWT Username-Password authentication is not yet supported.
+
+COPYRIGHT & LICENSE
+===================
+Copyright 2016 David Warring, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+

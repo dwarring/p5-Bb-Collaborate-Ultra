@@ -6,11 +6,11 @@ Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classrooms
 
 =head1 VERSION
 
-Version 0.00.01
+Version 0.00.02
 
 =cut
 
-our $VERSION = '0.00.01';
+our $VERSION = '0.00.02';
 
 use 5.008003;
 
@@ -135,6 +135,13 @@ See L<Bb::Collaborate::Ultra::Connection> for details.
 
 =back
 
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2009-2015 David Warring, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
 =cut
 
-1;
+1; # End of Bb::Collaborate::Ultra
