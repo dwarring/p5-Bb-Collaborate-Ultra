@@ -74,10 +74,8 @@ sub _freeze {
 sub _thaw {
     my ($val, $type) = @_;
 
-    return $val if $type =~ m{Ref}i
-	|| ref( $val);
-
-    return unless defined $val;
+    return $val
+        if !defined $val || $type =~ m{Ref|Array}i;
 
     for ($val) {
 

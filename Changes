@@ -1,4 +1,7 @@
 Revision history for Bb-Collaborate-Ultra
 
-0.00.01	 12 December 2016
-	 Intial release
+0.00.02 20th December 2016
+        Fixed thawing of data under Perl 5.10.1-
+
+0.00.01	12th December 2016
+        Initial release
