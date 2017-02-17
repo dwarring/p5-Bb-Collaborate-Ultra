@@ -10,7 +10,7 @@ Version 0.00.02
 
 =cut
 
-our $VERSION = '0.00.02';
+our $VERSION = '0.00.03';
 
 use 5.008003;
 

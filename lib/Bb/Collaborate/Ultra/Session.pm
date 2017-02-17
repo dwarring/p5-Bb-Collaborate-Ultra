@@ -64,9 +64,6 @@ __PACKAGE__->query_params(
     sessionCategory => 'Str',
 );
 
-use Bb::Collaborate::Ultra::LaunchContext;
-use Bb::Collaborate::Ultra::SessionEnrollment;
-
 =head2 enrollments
 
 Return a list of users who are enrolled for the session.
@@ -78,7 +75,16 @@ sub enrollments {
     my $data = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/enrollments';
+    require Bb::Collaborate::Ultra::SessionEnrollment;
     Bb::Collaborate::Ultra::SessionEnrollment->get($connection => {}, path => $path, parent => $self);
+}
+
+sub log {
+    my $self = shift;
+    my $connection = shift || $self->connection;
+    my $path = $self->path.'/instances';
+    require Bb::Collaborate::Ultra::Session::Log;
+    Bb::Collaborate::Ultra::Session::Log->get($connection => {}, path => $path, parent => $self);
 }
 
 1;
