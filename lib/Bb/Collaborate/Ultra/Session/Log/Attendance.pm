@@ -10,7 +10,7 @@ Bb::Collaborate::Ultra::Session::Log::Attendance
 
 =head1 DESCRIPTION
 
-Session scheduling sub-record.
+Logs an individual attendence.
 
 =head1 METHODS
 

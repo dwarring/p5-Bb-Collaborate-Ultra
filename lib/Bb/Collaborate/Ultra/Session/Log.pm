@@ -26,6 +26,12 @@ coerce __PACKAGE__, from 'HashRef' => via {
 __PACKAGE__->resource('instances');
 __PACKAGE__->load_schema(<DATA>);
 
+=head2 attendance
+
+Logs individual attendances for this session.
+
+=cut
+
 sub attendance {
     my $self = shift;
     my $connection = shift || $self->connection;

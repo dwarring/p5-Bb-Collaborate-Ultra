@@ -11,7 +11,7 @@ Bb::Collaborate::Ultra::Session::Attendee
 
 =head1 DESCRIPTION
 
-Session attendance logging.
+Logs Session attendances for an attendee.
 
 =head1 METHODS
 

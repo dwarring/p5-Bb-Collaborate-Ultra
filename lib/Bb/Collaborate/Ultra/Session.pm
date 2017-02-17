@@ -79,6 +79,12 @@ sub enrollments {
     Bb::Collaborate::Ultra::SessionEnrollment->get($connection => {}, path => $path, parent => $self);
 }
 
+=head2 log
+
+Returns logging information for completed sessions
+
+=cut
+
 sub log {
     my $self = shift;
     my $connection = shift || $self->connection;
