@@ -382,7 +382,8 @@ sub _thaw {
 		if defined $val;
 	}
 	else {
-	    warn "ignoring field: $fld";
+	    my $class = ref($self) || $self;
+	    warn $class." ignoring field: $fld";
 	}
     }
     \%thawed;
