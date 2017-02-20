@@ -137,6 +137,8 @@ can be used to extend the lease, whilst keeping the current connection.
 sub renew_lease {
     my $self = shift;
     my $expiry = shift || time()  +  JWT_EXPIRY;
+    die "connection has not be initialised"
+	unless $self->issuer && $self->secret && $self->client;
     my $class = 'Bb::Collaborate::Ultra::Connection::Token';
     my $client = $self->client;
 
@@ -164,12 +166,13 @@ sub renew_lease {
 
 =head2 POST
 
-Low level method. Post JSON data formatted data.
+Low level method. Posts JSON data formatted data, along with
+appropriate authorization headers.
 
     my $response = $connection->POST('sessions', '{"startTime":"2016-09-27T05:10:04Z","endTime":"2016-09-27T05:25:04Z","name":"Test Session"}');
     my $session = Bb::Collaborate::Ultra::Session->construct($response, connection => $connection);
 
-Generally, you should be using higher level class-specific methods:
+Generally, you should be using higher level class-specific `post` methods:
 
     my $session = Bb::Collaborate::Ultra::Session->post({startTime => time(), endTime => time() + 900, name => 'Test Session'});
 
@@ -180,6 +183,7 @@ sub POST {
     my $path = shift;
     my $json = shift;
     warn "POST: $path    $json\n" if $self->debug;
+    $self->renew_lease unless $self->auth; # auto-connect
     $self->client->POST($path, $json, {
 	'Content-Type' => 'application/json',
 	'Authorization' => 'Bearer ' . $self->auth->access_token,
@@ -222,6 +226,7 @@ sub GET {
     my $self = shift;
     my $path = shift;
     warn "GET: $path\n" if $self->debug;
+    $self->renew_lease unless $self->auth; # auto-connect
     $self->client->GET($path, {
 	'Content-Type' => 'application/json',
 	'Authorization' => 'Bearer ' . $self->auth->access_token,
@@ -248,6 +253,7 @@ sub DEL {
     $path .= '/' . $query_data->{id};
 
     warn "DELETE: $path\n" if $self->debug;
+    $self->renew_lease unless $self->auth; # auto-connect
     $self->client->DELETE($path, {
 	'Content-Type' => 'application/json',
 	'Authorization' => 'Bearer ' . $self->auth->access_token,

@@ -56,8 +56,10 @@ Creates object on the server. E.g.
     
 sub post {
     my $class = shift;
-    my $connection = shift || die "no connection";
-    my $data = shift || die "no data";
+    my $connection = shift;
+    my $data = shift;
+    die 'usage: '.$class.'->post($connection, $data)'
+	unless $connection && $data && $connection->can('POST');
     my %opt = @_;
     my $json = $class->_freeze($data);
     my $path = $opt{path} || $class->path
@@ -104,10 +106,12 @@ Fetches one or more objects from the server.
 
 sub get {
     my $self = shift;
-    my $connection = shift || die "no connection";
-    my $query_data = shift || die "no data";
+    my $connection = shift;
+    my $query_data = shift;
     my %opt = @_;
     my $class = ref($self) || $self;
+    die 'usage: '.$class.'->get($connection, $query_data)'
+	unless $connection && $query_data && $connection->can('GET');
 
     my $path = $opt{path};
     $path ||= $query_data->{id}
