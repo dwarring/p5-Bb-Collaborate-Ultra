@@ -62,7 +62,7 @@ SKIP: {
 	or diag "created: " .  $session->created;
 
     is exception {
-	$session->del;
+	$session->delete;
     }, undef, "session deletion lives";
 }
 

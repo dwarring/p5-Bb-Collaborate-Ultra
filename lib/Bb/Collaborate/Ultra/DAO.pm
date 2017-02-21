@@ -126,22 +126,22 @@ sub get {
 	: $class->construct($msg, connection => $connection, parent => $opt{parent});
 }
 
-=head2 del
+=head2 delete
 
 Deletes an object from the server
 
-    $session->del;
+    $session->delete;
 
 =cut
 
-sub del {
+sub delete {
     my $self = shift;
     my $connection = shift
 	|| $self->connection
 	|| die 'Not connected';
     my $data = shift || {id => $self->id};
     my $path = $self->resource;
-    $connection->DEL($path, $data);
+    $connection->DELETE($path, $data);
 }
 
 =head2 find_or_create

@@ -93,7 +93,7 @@ Each resource class is represented by a Perl 5 class:
 
 =head2 RESTful Services
 
-The above classes are based on Bb::Collaborate::Ultra::DAO, which  provides low level `post`, `get`, `patch` and `del` methods. Where:
+The above classes are based on Bb::Collaborate::Ultra::DAO, which  provides low level `post`, `get`, `patch` and `delete` methods. Where:
 
 =over 4
 
@@ -103,7 +103,7 @@ The above classes are based on Bb::Collaborate::Ultra::DAO, which  provides low 
 
 =item `patch` is used to update entities
 
-=item `del` is used to delete items
+=item `delete` is used to delete items
 
 =back
 

@@ -234,16 +234,16 @@ sub GET {
     $self->_response;
 }
 
-=head2 DEL
+=head2 DELETE
 
 Low level method. Delete by path
 
     my $session_id = $session->id;
-    my $response = $connection->DEL('sessions/'.$session_id);
+    my $response = $connection->DELETE('sessions/'.$session_id);
 
 =cut
 
-sub DEL {
+sub DELETE {
     my $self = shift;
     my $path = shift;
     my $query_data = shift || {};
