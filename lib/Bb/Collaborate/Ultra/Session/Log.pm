@@ -11,11 +11,35 @@ Bb::Collaborate::Ultra::Session::Log
 
 =head1 DESCRIPTION
 
-Session logging sub-record.
+Session logging class.
+
+=head1 EXAMPLE
+
+    my @sessions =  Bb::Collaborate::Ultra::Session->get($connection, {contextId => $context_id});
+    for my $session (@sessions) {
+	print "Session: ". $session->name . "\n";
+	my @logs = $session->logs;
+
+	for my $log (@logs) {
+	    say "\tOpened: " .(scalar localtime $log->opened);
+	    for my $attendee ($log->attendees) {
+		my $first_join;
+		my $elapsed = 0;
+		for my $attendance (@{$attendee->attendance}) {
+		    my $joined = $attendance->joined;
+		    $first_join = $joined
+			if !$first_join || $first_join > $joined;
+		    $elapsed += $attendance->left - $joined;
+		}
+		say sprintf("\tUser %s (%s) joined at %s, stayed %d minutes", $attendee->externalUserId, $attendee->displayName, (scalar localtime $first_join), $elapsed / 60);
+	    }
+	    say "\tClosed: " .(scalar localtime $log->closed);
+	}
+    }
 
 =head1 METHODS
 
-See L<https://xx-csa.bbcollab.com/documentation#Session>
+This class supports the `get` method as described in L<https://xx-csa.bbcollab.com/documentation#Attendee-collection>.
 
 =cut
     

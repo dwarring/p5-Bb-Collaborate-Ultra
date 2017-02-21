@@ -6,7 +6,7 @@ Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classrooms
 
 =head1 VERSION
 
-Version 0.00.02
+Version 0.00.03
 
 =cut
 
@@ -77,7 +77,7 @@ These services are described in L<https://xx-csa.bbcollab.com/documentation>.
 =head2 Resource Classes
 
 
-Each resource class and schema is represented by a Perl 5 class:
+Each resource class is represented by a Perl 5 class:
 
 =over 4
 
@@ -86,6 +86,8 @@ Each resource class and schema is represented by a Perl 5 class:
 =item Session - L<Bb::Collaborate::Ultra::Session> (see L<Session Documentation|https://xx-csa.bbcollab.com/documentation#Session>)
 
 =item Recording - L<Bb::Collaborate::Ultra::Recording> (see L<Recording Documentation|https://xx-csa.bbcollab.com/documentation#Recording>)
+
+=item Session Logs - L<Bb::Collaborate::Ultra::Session::Log> (see L<Session Documentation|https://xx-csa.bbcollab.com/documentation#Attendee-collection>)
 
 =back
 
@@ -137,7 +139,7 @@ See L<Bb::Collaborate::Ultra::Connection> for details.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009-2015 David Warring, all rights reserved.
+Copyright 2017 David Warring, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

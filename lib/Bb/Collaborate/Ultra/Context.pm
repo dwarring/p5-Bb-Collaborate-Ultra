@@ -20,7 +20,11 @@ A Context entity allows for grouping or classification of sessions and associate
 
 =head1 METHODS
 
-See L<https://xx-csa.bbcollab.com/documentation#Context>.
+This class supports the `get` and `post` methods as described in L<https://xx-csa.bbcollab.com/documentation#Context>.
+
+=head1 BUGS AND LIMITATIONS
+
+
 
 =cut
     

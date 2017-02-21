@@ -39,7 +39,7 @@ This class is used to manage Sessions (Virtual Classrooms).
 
 =head1 METHODS
 
-See L<https://xx-csa.bbcollab.com/documentation#Session>
+This class supports the `get`, `post`, `patch` and `del` methods as described in L<https://xx-csa.bbcollab.com/documentation#Session>
 
 =cut
 
@@ -274,6 +274,9 @@ __DATA__
       "type" : "boolean"
     },
     "canShareAudio" : {
+      "type" : "boolean"
+    },
+    "anonymizeRecording" : {
       "type" : "boolean"
     }
   }

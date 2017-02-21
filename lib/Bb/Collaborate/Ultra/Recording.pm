@@ -18,7 +18,7 @@ Bb::Collaborate::Ultra::Recording - Session Recordings
 
 =head1 METHODS
 
-See L<https://xx-csa.bbcollab.com/documentation#Recording>.
+This class supports the `get` and `delete` methods as described in L<https://xx-csa.bbcollab.com/documentation#Recording>.
 
 =cut
     

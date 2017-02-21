@@ -45,6 +45,7 @@ SKIP: {
     my @enrollments = $session->enrollments;
     is scalar @enrollments, 0, 'no session enrolments yet';
 
+    require Bb::Collaborate::Ultra::User;
     my $user = Bb::Collaborate::Ultra::User->new({
 	extId => 'testLaunchUser',
 	displayName => 'David Warring',
@@ -53,6 +54,7 @@ SKIP: {
 	lastName => 'Warring',
     });
 
+    require Bb::Collaborate::Ultra::LaunchContext;
     my $launch_context =  Bb::Collaborate::Ultra::LaunchContext->new({ launchingRole => 'moderator',
 	 editingPermission => 'writer',
 	 user => $user,
