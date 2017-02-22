@@ -8,7 +8,7 @@ use t::Ultra;
 SKIP: {
     my %t = t::Ultra->test_connection;
     my $connection = $t{connection};
-    skip $t{skip} || 'skipping live tests', 18
+    skip $t{skip} || 'skipping live tests', 20
 	unless $connection;
 
     $connection->connect;
