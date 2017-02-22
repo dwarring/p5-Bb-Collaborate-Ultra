@@ -62,11 +62,18 @@ __PACKAGE__->query_params(
     startTime => 'Date',
     endTime => 'Date',
     sessionCategory => 'Str',
-);
+    );
 
 =head2 enrollments
 
-Return a list of users who are enrolled for the session.
+Return a list of users, of type L<Bb::Collaborate::Ultra::Session::Enrollment>.
+
+These are the users who are enrolled for, or have joined the session.
+
+    my @enrollments = $session->enrollments;
+    for my $enrolment (@enrollments) {
+        say "user @{[$enrolment->userId]} is enrolled as a @{[$enrollment->launchingRole]}";
+    }
 
 =cut
 
@@ -75,8 +82,8 @@ sub enrollments {
     my $data = shift;
     my $connection = shift || $self->connection;
     my $path = $self->path.'/enrollments';
-    require Bb::Collaborate::Ultra::SessionEnrollment;
-    Bb::Collaborate::Ultra::SessionEnrollment->get($connection => {}, path => $path, parent => $self);
+    require Bb::Collaborate::Ultra::Session::Enrollment;
+    Bb::Collaborate::Ultra::Session::Enrollment->get($connection => {}, path => $path, parent => $self);
 }
 
 =head2 logs

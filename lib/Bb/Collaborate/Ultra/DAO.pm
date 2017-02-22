@@ -196,12 +196,17 @@ Computes a RESTful resource path for the object.
 
 sub path {
     my $self = shift;
+    my %opt = @_;
+    my $parent = $opt{parent};
+    $parent ||= $self->parent
+	if ref($self);
     my $path = '';
-    $path .= $self->parent->path . '/'
-	if ref($self) && $self->parent;
+    $path .= $parent->path . '/'
+	if $parent;
     $path .= $self->resource;
     my $id = ref $self && $self->id;
-    $id ? $path . '/' . $id : $path;
+    $path .= '/' . $id if $id;
+    $path;
 }
 
 =head2 parent

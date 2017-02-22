@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 18;
+use Test::More tests => 20;
 use Test::Fatal;
 use Date::Parse;
 use lib '.';
@@ -67,9 +67,29 @@ SKIP: {
 
     ok $url, "got launch_context url";
 
+    $user = Bb::Collaborate::Ultra::User->post($connection, {
+	extId => 'testEnrolUser',
+	displayName => 'David Warring',
+	email => 'david.warring@gmail.com',
+	firstName => 'David',
+	lastName => 'Warring',
+    });
+    my $user_id = $user->id;
+    require Bb::Collaborate::Ultra::Session::Enrollment;
+    my $enrollment =  Bb::Collaborate::Ultra::Session::Enrollment->new({ launchingRole => 'moderator',
+	 editingPermission => 'writer',
+	 userId => $user_id,
+	 });
+
+    is exception {
+	$enrollment = $enrollment->enrol($session);
+    }, undef, '$enrol session - lives';
+
+    ok $enrollment, "got launch_context url";
+
     @enrollments = $session->enrollments;
-    is scalar @enrollments, 1, 'user is now enrolled';
-    my $enrollment = $enrollments[0];
+    is scalar @enrollments, 2, 'both users are now enrolled';
+    $enrollment = $enrollments[0];
 
     is $enrollment->editingPermission, 'writer', 'enrolment editingPermission';
 

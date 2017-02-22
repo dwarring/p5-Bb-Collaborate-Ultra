@@ -137,8 +137,6 @@ can be used to extend the lease, whilst keeping the current connection.
 sub renew_lease {
     my $self = shift;
     my $expiry = shift || time()  +  JWT_EXPIRY;
-    die "connection has not be initialised"
-	unless $self->issuer && $self->secret && $self->client;
     my $class = 'Bb::Collaborate::Ultra::Connection::Token';
     my $client = $self->client;
 

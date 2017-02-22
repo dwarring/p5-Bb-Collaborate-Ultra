@@ -1,9 +1,12 @@
 Revision history for Bb-Collaborate-Ultra
 
-0.00.03 17th February 2017
+0.00.03 23rd February 2017
         Added session logging classes:
         - Bb::Collaborate::Ultra::Log
         - Bb::Collaborate::Ultra::Log::Attendees > Attendee > Attedance
+	Rename class Bb::Collaborate::Ultra::SessionEnrollment
+	-> Bb::Collaborate::Ultra::Session::Enrollment
+	Rename Bb::Collaborate::Ultra::DAO method del -> delete
 
 0.00.02 20th December 2016
         Fixed thawing of data under Perl 5.10.1-
