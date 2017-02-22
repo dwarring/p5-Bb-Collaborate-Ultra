@@ -1,6 +1,6 @@
 Revision history for Bb-Collaborate-Ultra
 
-0.00.03 23rd February 2017
+0.01.00 24th February 2017
         Added session logging classes:
         - Bb::Collaborate::Ultra::Log
         - Bb::Collaborate::Ultra::Log::Attendees > Attendee > Attedance

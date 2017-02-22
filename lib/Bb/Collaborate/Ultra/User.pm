@@ -75,6 +75,9 @@ __DATA__
     "extId" : {
       "type" : "string"
     },
+    "role" : {
+      "type" : "string"
+    },
     "modified" : {
       "type" : "string",
       "format" : "DATE_TIME"
