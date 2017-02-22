@@ -6,11 +6,11 @@ Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classrooms
 
 =head1 VERSION
 
-Version 0.00.03
+Version 0.01.00
 
 =cut
 
-our $VERSION = '0.00.03';
+our $VERSION = '0.01.00';
 
 use 5.008003;
 
