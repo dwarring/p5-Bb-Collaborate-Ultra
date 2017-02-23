@@ -37,6 +37,53 @@ This class is used to manage Sessions (Virtual Classrooms).
 	    },
 	);
 
+=head2 Enrolling User in Sessions
+
+AFAIK, there are two classes and two different modes for enrolling user to sessions:
+
+=over 4
+
+=item (*)  Ad-hoc users via L<Bb::Collaborate::Ultra::LaunchContext>
+
+    my $user = Bb::Collaborate::Ultra::User->new({
+	extId => 'testLaunchUser',
+	displayName => 'David Warring',
+	email => 'david.warring@gmail.com',
+	firstName => 'David',
+	lastName => 'Warring',
+    });
+
+    my $launch_context = Bb::Collaborate::Ultra::LaunchContext->new({ launchingRole => 'moderator',
+	 editingPermission => 'writer',
+	 user => $user,
+	 });
+
+    my $join_url = $launch_context->join_session($session);
+
+=item (*) Permanently managed users via L<Bb::Collaborate::Ultra::LaunchContext>
+
+Each user is created once.
+
+    my $ultra_user = Bb::Collaborate::Ultra::User->create($connection, {
+	extId => 'testLaunchUser',
+	displayName => 'David Warring',
+	email => 'david.warring@gmail.com',
+	firstName => 'David',
+	lastName => 'Warring',
+    });
+    my $ultra_user_id = $ultra_user->id;
+    # somehow save the user id permanently...
+
+The saved user-id may then be used to multiple times to join sessions:
+
+     my $enrollment =  Bb::Collaborate::Ultra::Session::Enrollment->new({ launchingRole => 'moderator',
+	 editingPermission => 'writer',
+	 userId => $user2->id,
+	 });
+      my $join_url = $enrolment->enrol($session)->permanentUrl;
+
+=back
+
 =head1 METHODS
 
 This class supports the `get`, `post`, `patch` and `del` methods as described in L<https://xx-csa.bbcollab.com/documentation#Session>
@@ -67,8 +114,6 @@ __PACKAGE__->query_params(
 =head2 enrollments
 
 Return a list of users, of type L<Bb::Collaborate::Ultra::Session::Enrollment>.
-
-These are the users who are enrolled for, or have joined the session.
 
     my @enrollments = $session->enrollments;
     for my $enrolment (@enrollments) {

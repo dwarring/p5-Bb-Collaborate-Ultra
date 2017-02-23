@@ -30,7 +30,7 @@ sub enrol {
 	    || $session->connection
 	or die "not connected";
     my $path = $self->path(parent => $session);
-    $self->post($connection, $self->_raw_data, path => $path);
+    my $enrolment = $self->post($connection, $self->_raw_data, path => $path);
 }
 
 # downloaded from https://xx-csa.bbcollab.com/documentation

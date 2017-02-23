@@ -1,5 +1,5 @@
 use warnings; use strict;
-use Test::More tests => 20;
+use Test::More tests => 21;
 use Test::Fatal;
 use Date::Parse;
 use lib '.';
@@ -8,7 +8,7 @@ use t::Ultra;
 SKIP: {
     my %t = t::Ultra->test_connection;
     my $connection = $t{connection};
-    skip $t{skip} || 'skipping live tests', 20
+    skip $t{skip} || 'skipping live tests', 21
 	unless $connection;
 
     $connection->connect;
@@ -46,7 +46,7 @@ SKIP: {
     is scalar @enrollments, 0, 'no session enrolments yet';
 
     require Bb::Collaborate::Ultra::User;
-    my $user = Bb::Collaborate::Ultra::User->new({
+    my $launch_user = Bb::Collaborate::Ultra::User->new({
 	extId => 'testLaunchUser',
 	displayName => 'David Warring',
 	email => 'david.warring@gmail.com',
@@ -57,7 +57,7 @@ SKIP: {
     require Bb::Collaborate::Ultra::LaunchContext;
     my $launch_context =  Bb::Collaborate::Ultra::LaunchContext->new({ launchingRole => 'moderator',
 	 editingPermission => 'writer',
-	 user => $user,
+	 user => $launch_user,
 	 });
 
     my $url;
@@ -67,18 +67,17 @@ SKIP: {
 
     ok $url, "got launch_context url";
 
-    $user = Bb::Collaborate::Ultra::User->post($connection, {
+    my $user = Bb::Collaborate::Ultra::User->post($connection, {
 	extId => 'testEnrolUser',
 	displayName => 'David Warring',
 	email => 'david.warring@gmail.com',
 	firstName => 'David',
 	lastName => 'Warring',
     });
-    my $user_id = $user->id;
     require Bb::Collaborate::Ultra::Session::Enrollment;
     my $enrollment =  Bb::Collaborate::Ultra::Session::Enrollment->new({ launchingRole => 'moderator',
 	 editingPermission => 'writer',
-	 userId => $user_id,
+	 userId => $user->id,
 	 });
 
     is exception {
@@ -118,5 +117,6 @@ SKIP: {
     }, undef, 'fetch session by context - lives';
     ok scalar(@sessions), 'fetch session by context - results';
 
-    is exception { $session->delete }, undef, 'session->del - lives';
+    is exception { $session->delete }, undef, 'session->delete - lives';
+    is exception { $user->delete }, undef, 'user->delete - lives';
 }

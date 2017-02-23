@@ -10,6 +10,7 @@ Version 0.01.00
 
 =cut
 
+use strict;
 our $VERSION = '0.01.00';
 
 use 5.008003;
