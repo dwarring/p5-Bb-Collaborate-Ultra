@@ -6,12 +6,12 @@ Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classrooms
 
 =head1 VERSION
 
-Version 0.01.00
+Version 0.01.01
 
 =cut
 
 use strict;
-our $VERSION = '0.01.00';
+our $VERSION = '0.01.01';
 
 use 5.008003;
 
@@ -127,6 +127,13 @@ These conversions are applied on data being sent or received from the Collaborat
 Authentication is via the OAuth 2.0 protocol, using the JWT Token Flow, as described in the L<documentation|https://xx-csa.bbcollab.com/documentation>.
 
 See L<Bb::Collaborate::Ultra::Connection> for details.
+
+=head1 SCRIPTS
+
+=head2 bb-collab-session-log
+
+Tjhis is a sample script to dump basic session logging for a
+completed session.
 
 =head1 BUGS AND LIMITATIONS
 

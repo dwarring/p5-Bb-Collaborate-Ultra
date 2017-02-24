@@ -328,7 +328,7 @@ __DATA__
     "canShareAudio" : {
       "type" : "boolean"
     },
-    "anonymizeRecording" : {
+    "anonymizeRecordings" : {
       "type" : "boolean"
     }
   }

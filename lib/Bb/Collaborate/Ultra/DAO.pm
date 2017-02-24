@@ -107,11 +107,11 @@ Fetches one or more objects from the server.
 sub get {
     my $self = shift;
     my $connection = shift;
-    my $query_data = shift;
+    my $query_data = shift // {};
     my %opt = @_;
     my $class = ref($self) || $self;
-    die 'usage: '.$class.'->get($connection, $query_data)'
-	unless $connection && $query_data && $connection->can('GET');
+    die 'usage: '.$class.'->get($connection, [$query_data], %opt)'
+	unless $connection && $connection->can('GET');
 
     my $path = $opt{path};
     $path ||= $query_data->{id}
