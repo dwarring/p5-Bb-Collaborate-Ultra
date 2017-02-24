@@ -41,9 +41,10 @@ Creates meetings on an Elluminate I<Live!> Manager (ELM) server.
 
 =head1 SEE ALSO
 
-perldoc Elive
+perldoc Bb::Collaborate::Ultra
 
-http://search.cpan.org/dist/Elive
+https://metacpan.org/release/Bb-Collaborate-Ultra
+
 
 =cut
 

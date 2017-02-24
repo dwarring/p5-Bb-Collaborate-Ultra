@@ -1,7 +1,8 @@
 Revision history for Bb-Collaborate-Ultra
 
 0.01.01 24th February 2017
-        Added sample script: bb-collab-session-log.pl
+        - Fixed MANIFEST
+        - Added sample script: bb-collab-session-log.pl
 
 0.01.00 24th February 2017
         Added session logging classes:
