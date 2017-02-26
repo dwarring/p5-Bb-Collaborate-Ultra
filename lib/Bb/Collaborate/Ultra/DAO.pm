@@ -155,17 +155,17 @@ sub find_or_create {
     my $connection = shift;
     my $data = shift;
 
-    my $param_types = $class->query_params;
-    my $prop_types = $class->_property_types;
+    my $params = $class->query_params;
+    my $props = $class->_property_types;
     my %query;
     my %body;
 
     for my $fld (keys %$data) {
 	my $val = $data->{$fld};
-	if (exists $param_types->{$fld}) {
+	if (exists $params->{$fld}) {
 	    $query{$fld} = $val;
 	}
-	elsif (exists $prop_types->{$fld}) {
+	elsif (exists $props->{$fld}) {
 	    $body{$fld} = $val;
 	}
 	else {
@@ -353,14 +353,14 @@ sub _raw_data {
 
 sub TO_JSON {
     my $self = shift;
-    my $prop_types = $self->_property_types;
-    my $param_types = $self->query_params;
+    my $props = $self->_property_types;
+    my $params = $self->query_params;
     my $data = shift || $self->_raw_data;
 
     my %frozen;
 
     for my $fld (keys %$data) {
-	my $type = $prop_types->{$fld} || $param_types->{$fld} || do {
+	my $type = $props->{$fld} || $params->{$fld} || do {
 	    warn((ref($self) || $self).": unknown field/query-parameter: $fld");
 	    'Str'
 	};
