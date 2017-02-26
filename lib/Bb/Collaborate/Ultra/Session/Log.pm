@@ -58,10 +58,12 @@ Logs individual attendances for this session.
 
 sub attendees {
     my $self = shift;
-    my $connection = shift || $self->connection;
+    my $query = shift || {};
+    my %opt = @_;
+    my $connection = $opt{connection} || $self->connection;
     my $path = $self->path.'/attendees';
     require Bb::Collaborate::Ultra::Session::Log::Attendee;
-    Bb::Collaborate::Ultra::Session::Log::Attendee->get($connection => {}, path => $path, parent => $self);
+    Bb::Collaborate::Ultra::Session::Log::Attendee->get($connection => $query, path => $path, parent => $self);
 }
 
 # **NOT DOCUMENTED** in https://xx-csa.bbcollab.com/documentation

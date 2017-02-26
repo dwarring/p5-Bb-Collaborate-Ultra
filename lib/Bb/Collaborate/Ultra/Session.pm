@@ -124,11 +124,12 @@ Return a list of users, of type L<Bb::Collaborate::Ultra::Session::Enrollment>.
 
 sub enrollments {
     my $self = shift;
-    my $data = shift;
-    my $connection = shift || $self->connection;
+    my $query = shift || {};
+    my %opt = @_;
+    my $connection = $opt{connection} || $self->connection;
     my $path = $self->path.'/enrollments';
     require Bb::Collaborate::Ultra::Session::Enrollment;
-    Bb::Collaborate::Ultra::Session::Enrollment->get($connection => {}, path => $path, parent => $self);
+    Bb::Collaborate::Ultra::Session::Enrollment->get($connection, $query, path => $path, parent => $self);
 }
 
 =head2 logs
@@ -139,10 +140,12 @@ Returns logging information for completed sessions
 
 sub logs {
     my $self = shift;
-    my $connection = shift || $self->connection;
+    my $query = shift || {};
+    my %opt = @_;
+    my $connection = $opt{connection} || $self->connection;
     my $path = $self->path.'/instances';
     require Bb::Collaborate::Ultra::Session::Log;
-    Bb::Collaborate::Ultra::Session::Log->get($connection => {}, path => $path, parent => $self);
+    Bb::Collaborate::Ultra::Session::Log->get($connection, $query, path => $path, parent => $self);
 }
 
 1;
