@@ -89,13 +89,13 @@ $connection->debug(1) if $debug;
 my $context_id = "6812E6A3EA4072D1425FA583BF59C5CD";
 my @sessions =  Bb::Collaborate::Ultra::Session->get($connection, \%opt);
 for my $session (@sessions) {
-    my @logs = $session->logs;
+    my @logs = $session->get_logs({expand => 'attendees' });
     if (@logs) {
 	say "Session: ". $session->name;
     }
     for my $log (@logs) {
 	say "\tOpened: " .(scalar localtime $log->opened);
-	for my $attendee ($log->attendees) {
+	for my $attendee (@{$log->attendees}) {
 	    my $first_join;
 	    my $elapsed = 0;
 	    for my $attendance (@{$attendee->attendance}) {
