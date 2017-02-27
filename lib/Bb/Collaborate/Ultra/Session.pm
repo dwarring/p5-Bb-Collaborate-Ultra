@@ -111,18 +111,18 @@ __PACKAGE__->query_params(
     sessionCategory => 'Str',
     );
 
-=head2 enrollments
+=head2 get_enrollments
 
 Return a list of users, of type L<Bb::Collaborate::Ultra::Session::Enrollment>.
 
-    my @enrollments = $session->enrollments;
+    my @enrollments = $session->get_enrollments;
     for my $enrolment (@enrollments) {
         say "user @{[$enrolment->userId]} is enrolled as a @{[$enrollment->launchingRole]}";
     }
 
 =cut
 
-sub enrollments {
+sub get_enrollments {
     my $self = shift;
     my $query = shift || {};
     my %opt = @_;
@@ -132,13 +132,13 @@ sub enrollments {
     Bb::Collaborate::Ultra::Session::Enrollment->get($connection, $query, path => $path, parent => $self);
 }
 
-=head2 logs
+=head2 get_logs
 
-Returns logging information for completed sessions
+Returns logging (session-instance) information for completed sessions
 
 =cut
 
-sub logs {
+sub get_logs {
     my $self = shift;
     my $query = shift || {};
     my %opt = @_;

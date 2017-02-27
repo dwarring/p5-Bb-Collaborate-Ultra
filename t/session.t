@@ -42,7 +42,7 @@ SKIP: {
     $updates = $session->_pending_updates;
     delete $updates->{active}; # ignore this
     is_deeply $updates, { 'id' => $session->id, }, 'updates are flushed';
-    my @enrollments = $session->enrollments;
+    my @enrollments = $session->get_enrollments;
     is scalar @enrollments, 0, 'no session enrolments yet';
 
     require Bb::Collaborate::Ultra::User;
@@ -86,7 +86,7 @@ SKIP: {
 
     ok $enrollment, "got launch_context url";
 
-    @enrollments = $session->enrollments;
+    @enrollments = $session->get_enrollments;
     is scalar @enrollments, 2, 'both users are now enrolled';
     $enrollment = $enrollments[0];
 
