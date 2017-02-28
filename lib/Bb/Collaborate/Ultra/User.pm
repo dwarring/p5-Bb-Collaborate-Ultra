@@ -13,7 +13,7 @@ See also L<Bb::Collaborate::Ultra::LaunchContext>.
 
 =head2 METHODS
 
-See L<https://xx-csa.bbcollab.com/documentation#User>
+This class supports the `get`, `post`, `patch` and `delete` methods as described in L<https://xx-csa.bbcollab.com/documentation#User>
 
 =cut
 

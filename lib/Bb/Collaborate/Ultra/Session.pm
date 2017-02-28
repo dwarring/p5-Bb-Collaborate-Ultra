@@ -86,7 +86,7 @@ The saved user-id may then be used to multiple times to join sessions:
 
 =head1 METHODS
 
-This class supports the `get`, `post`, `patch` and `del` methods as described in L<https://xx-csa.bbcollab.com/documentation#Session>
+This class supports the `get`, `post`, `patch` and `delete` methods as described in L<https://xx-csa.bbcollab.com/documentation#Session>
 
 =cut
 

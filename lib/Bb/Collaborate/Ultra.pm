@@ -139,8 +139,6 @@ completed session.
 
 =over 4
 
-=item - This module does not yet fully implement resource types: Users, Enrollments or Courses
-
 =item - JWT Username-Password authentication is not yet supported.
 
 =back
