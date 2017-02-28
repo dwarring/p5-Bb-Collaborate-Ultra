@@ -1,6 +1,6 @@
 NAME
 ====
-Bb::Collaborate::Ultra - Perl 5 bindings to Collaborate Ultra Virtual Classroom Software (Under Construction)
+Bb::Collaborate::Ultra - Perl 5 bindings to Collaborate Ultra Virtual Classroom Software
 
 SYNOPSIS
 ========
@@ -62,6 +62,7 @@ Each resource class and schema is represented by a Perl 5 class:
 - Context - Bb::Collaborate::Ultra::Context
 - Session - Bb::Collaborate::Ultra::Session
 - Recording - Bb::Collaborate::Ultra::Recording
+- User - Bb::Collaborate::Ultra::User
 
 Authentication
 --------------
