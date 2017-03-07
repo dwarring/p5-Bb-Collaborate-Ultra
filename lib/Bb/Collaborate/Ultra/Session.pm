@@ -19,7 +19,7 @@ has 'recurrenceRule' => (isa => 'Bb::Collaborate::Ultra::Session::RecurrenceRule
 
 =head1 NAME
 
-Bb::Collaborate::Ultra::Session
+Bb::Collaborate::Ultra::Session - Sessions (Virtual classrooms)
 
 =head1 DESCRIPTION
 

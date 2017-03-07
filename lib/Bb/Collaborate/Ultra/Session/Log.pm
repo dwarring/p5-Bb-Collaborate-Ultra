@@ -8,7 +8,7 @@ use Bb::Collaborate::Ultra::Session::Log::Attendee;
 
 =head1 NAME
 
-Bb::Collaborate::Ultra::Session::Log
+Bb::Collaborate::Ultra::Session::Log - Session and Attendee logs
 
 =head1 DESCRIPTION
 

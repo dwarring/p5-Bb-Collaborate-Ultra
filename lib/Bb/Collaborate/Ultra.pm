@@ -6,12 +6,12 @@ Bb::Collaborate::Ultra - Perl bindings for Blackboard Ultra virtual classrooms
 
 =head1 VERSION
 
-Version 0.01.02
+Version 0.01.03
 
 =cut
 
 use strict;
-our $VERSION = '0.01.02';
+our $VERSION = '0.01.03';
 
 use 5.008003;
 
@@ -88,7 +88,7 @@ Each resource class is represented by a Perl 5 class:
 
 =item Recording - L<Bb::Collaborate::Ultra::Recording> (see L<Recording Documentation|https://xx-csa.bbcollab.com/documentation#Recording>)
 
-=item Session Logs - L<Bb::Collaborate::Ultra::Session::Log> (see L<Session Documentation|https://xx-csa.bbcollab.com/documentation#Attendee-collection>)
+=item Session Logs - L<Bb::Collaborate::Ultra::Session::Log> (see L<Attendee Documentation|https://xx-csa.bbcollab.com/documentation#Attendee-collection>)
 
 =back
 
